@@ -1,6 +1,7 @@
 package org.iscas.tj2.pyt.springboot_mybatis.scene_state;
 
 import org.iscas.tj2.pyt.springboot_mybatis.SceneType;
+import org.iscas.tj2.pyt.springboot_mybatis.SubScene;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class State {
@@ -11,7 +12,7 @@ public class State {
 	private int intDepth; //上下文深度
 	private SceneType sceneType;//状态所属类型，需在构造函数中初始化
 	private boolean isAdmin;//表示是否管理员，决定对公共对象的访问权限，如果是我的微信登录则是管理员，否则是别人登录，目的是显示不同的help信息，支持不同的命令
-	
+	private SubScene subState;//记录子状态
 	//2018-11-18 取消这两个成员
 	//增加两项，分别是最近的用户输入，和最近给用户的输出
 	//private String reqContent;
@@ -31,6 +32,7 @@ public class State {
 		this.strComment = strComment;
 		this.sceneType = sceneType;
 		this.setIsAdmin(false);
+		this.subState = SubScene.SSNone;
 	}
 
 	public String getStrTable() {
@@ -79,6 +81,14 @@ public class State {
 
 	public void setIsAdmin(boolean isAdmin) {
 		this.isAdmin = isAdmin;
+	}
+
+	public SubScene getSubState() {
+		return subState;
+	}
+
+	public void setSubState(SubScene subState) {
+		this.subState = subState;
 	}
 
 

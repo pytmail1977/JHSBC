@@ -140,6 +140,7 @@ public class StateTransfer {
 		transferMapSTUser.put("pwd", FuncBase::pwd);
 		//新增SceneType.STUser场景的转移出口whoami
 		transferMapSTUser.put("attr", FuncBase::attr);		
+		transferMapSTUser.put("newattr", FuncBase::newattr);		
 		//新增SceneType.STUser场景的转移出口whoami
 		transferMapSTUser.put("whoami", FuncBase::whoami);	
 		//新增SceneType.STUser场景的转移出口dc
@@ -183,7 +184,8 @@ public class StateTransfer {
 		//新增SceneType.STStruct场景的转移出口help
 		transferMapSTStruct.put("pwd", FuncBase::pwd);
 		//新增SceneType.STStruct场景的转移出口whoami
-		transferMapSTStruct.put("attr", FuncBase::attr);		
+		transferMapSTStruct.put("attr", FuncBase::attr);	
+		transferMapSTStruct.put("newattr", FuncBase::newattr);
 		//新增SceneType.STStruct场景的转移出口whoami
 		transferMapSTStruct.put("whoami", FuncBase::whoami);	
 		//新增SceneType.STStruct场景的转移出口dc
@@ -207,7 +209,8 @@ public class StateTransfer {
 		//新增SceneType.STStructItem场景的转移出口help
 		transferMapSTStructItem.put("pwd", FuncBase::pwd);
 		//新增SceneType.STStructItem场景的转移出口whoami
-		transferMapSTStructItem.put("attr", FuncBase::attr);		
+		transferMapSTStructItem.put("attr", FuncBase::attr);	
+		transferMapSTStructItem.put("newattr", FuncBase::newattr);	
 		//新增SceneType.STStructItem场景的转移出口whoami
 		transferMapSTStructItem.put("whoami", FuncBase::whoami);	
 		//新增SceneType.STStructItem场景的转移出口dc
@@ -223,7 +226,8 @@ public class StateTransfer {
 		//新增SceneType.STType场景的转移出口help
 		transferMapSTType.put("pwd", FuncBase::pwd);
 		//新增SceneType.STType场景的转移出口whoami
-		transferMapSTType.put("attr", FuncBase::attr);		
+		transferMapSTType.put("attr", FuncBase::attr);	
+		transferMapSTType.put("newattr", FuncBase::newattr);	
 		//新增SceneType.STType场景的转移出口whoami
 		transferMapSTType.put("whoami", FuncBase::whoami);	
 		//新增SceneType.STType场景的转移出口dc
@@ -239,7 +243,8 @@ public class StateTransfer {
 		//新增SceneType.STProject场景的转移出口help
 		transferMapSTProject.put("pwd", FuncBase::pwd);
 		//新增SceneType.STProject场景的转移出口whoami
-		transferMapSTProject.put("attr", FuncBase::attr);		
+		transferMapSTProject.put("attr", FuncBase::attr);	
+		transferMapSTProject.put("newattr", FuncBase::newattr);
 		//新增SceneType.STProject场景的转移出口whoami
 		transferMapSTProject.put("whoami", FuncBase::whoami);	
 		//新增SceneType.STProject场景的转移出口dc
@@ -272,7 +277,8 @@ public class StateTransfer {
 		//新增SceneType.STFunc场景的转移出口help
 		transferMapSTFunc.put("pwd", FuncBase::pwd);
 		//新增SceneType.STFunc场景的转移出口whoami
-		transferMapSTFunc.put("attr", FuncBase::attr);		
+		transferMapSTFunc.put("attr", FuncBase::attr);	
+		transferMapSTFunc.put("newattr", FuncBase::newattr);
 		//新增SceneType.STFunc场景的转移出口whoami
 		transferMapSTFunc.put("whoami", FuncBase::whoami);	
 		//新增SceneType.STFunc场景的转移出口dc
@@ -287,6 +293,7 @@ public class StateTransfer {
 		transferMapSTFunc.put("cdfv", FuncBase::cdfv);
 		//新增SceneType.STFunc场景的转移出口addf
 		transferMapSTFunc.put("addfs", FuncBase::addfs);
+		transferMapSTFunc.put("newaddfs", FuncBase::newaddfs);
 		//新增SceneType.STFunc场景的转移出口addv
 		transferMapSTFunc.put("addfv", FuncBase::addfv);
 		//新增SceneType.STFunc场景的转移出口delf
@@ -304,7 +311,8 @@ public class StateTransfer {
 		//新增SceneFuncStatement.STFuncStatement场景的转移出口help
 		transferMapSTFuncStatement.put("pwd", FuncBase::pwd);
 		//新增SceneFuncStatement.STFuncStatement场景的转移出口whoami
-		transferMapSTFuncStatement.put("attr", FuncBase::attr);		
+		transferMapSTFuncStatement.put("attr", FuncBase::attr);	
+		transferMapSTFuncStatement.put("newattr", FuncBase::newattr);	
 		//新增SceneFuncStatement.STFuncStatement场景的转移出口whoami
 		transferMapSTFuncStatement.put("whoami", FuncBase::whoami);	
 		//新增SceneFuncStatement.STFuncStatement场景的转移出口dc
@@ -321,7 +329,8 @@ public class StateTransfer {
 		//新增SceneType.STFuncVar场景的转移出口help
 		transferMapSTFuncVar.put("pwd", FuncBase::pwd);
 		//新增SceneType.STFuncVar场景的转移出口whoami
-		transferMapSTFuncVar.put("attr", FuncBase::attr);		
+		transferMapSTFuncVar.put("attr", FuncBase::attr);	
+		transferMapSTFuncVar.put("newattr", FuncBase::newattr);	
 		//新增SceneType.STFuncVar场景的转移出口whoami
 		transferMapSTFuncVar.put("whoami", FuncBase::whoami);	
 		//新增SceneType.STFuncVar场景的转移出口dc
@@ -346,6 +355,7 @@ public class StateTransfer {
 		transferMapSTFuncVarItem.put("pwd", FuncBase::pwd);
 		// 新增SceneFuncVarItem.STFuncVarItem场景的转移出口whoami
 		transferMapSTFuncVarItem.put("attr", FuncBase::attr);
+		transferMapSTFuncVarItem.put("newattr", FuncBase::newattr);
 		// 新增SceneFuncVarItem.STFuncVarItem场景的转移出口whoami
 		transferMapSTFuncVarItem.put("whoami", FuncBase::whoami);
 		// 新增SceneFuncVarItem.STFuncVarItem场景的转移出口dc
@@ -362,6 +372,7 @@ public class StateTransfer {
 		transferMapSTVar.put("pwd", FuncBase::pwd);
 		//新增SceneType.STVar场景的转移出口whoami
 		transferMapSTVar.put("attr", FuncBase::attr);		
+		transferMapSTVar.put("newattr", FuncBase::newattr);
 		//新增SceneType.STVar场景的转移出口whoami
 		transferMapSTVar.put("whoami", FuncBase::whoami);	
 		//新增SceneType.STVar场景的转移出口dc
@@ -386,6 +397,7 @@ public class StateTransfer {
 		transferMapSTVarItem.put("pwd", FuncBase::pwd);
 		// 新增SceneVarItem.STVarItem场景的转移出口whoami
 		transferMapSTVarItem.put("attr", FuncBase::attr);
+		transferMapSTVarItem.put("newattr", FuncBase::newattr);
 		// 新增SceneVarItem.STVarItem场景的转移出口whoami
 		transferMapSTVarItem.put("whoami", FuncBase::whoami);
 		// 新增SceneVarItem.STVarItem场景的转移出口dc

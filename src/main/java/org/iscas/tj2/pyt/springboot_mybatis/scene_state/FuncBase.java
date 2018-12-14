@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.iscas.tj2.pyt.springboot_mybatis.Const;
 import org.iscas.tj2.pyt.springboot_mybatis.SceneType;
+import org.iscas.tj2.pyt.springboot_mybatis.SubScene;
 import org.iscas.tj2.pyt.springboot_mybatis.domain.FuncStatement;
 import org.iscas.tj2.pyt.springboot_mybatis.domain.FuncVar;
 import org.iscas.tj2.pyt.springboot_mybatis.domain.FuncVarItem;
@@ -117,7 +118,7 @@ public class FuncBase {
 
 	public static String attr(StateStack stateStack, String str) {
 		State state = stateStack.getCurrentState();
-		System.out.println("whoami: arg=" + str);
+		System.out.println("attr: arg=" + str);
 		//将str从“=”分割为key和value两部分
 		String[] strArray = str.split("=");
 		String strKey = strArray[0];
@@ -147,6 +148,16 @@ public class FuncBase {
         }
 
 	}// 修改当前对象的属性
+	
+	//2018-12-14 新增一个newattr（）函数，只是设置当前状态的子状态为SubScene.SSAttr，并返回一句提示语，请用户直接编辑，输入":q"退出编辑状态
+	public static String newattr(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("newAttrForContinueEdit: arg=" + str);
+		
+		//将当前状态的子状态设置为
+		state.setSubState(SubScene.SSAttr);
+		return "您已进入属性编辑模式，请逐行以key=value形式修改属性，输入\":q\"退出编辑模式"; 
+	}// 进入属性修改模式
 	
 	public static String dc(StateStack stateStack, String str) {
 		
@@ -1571,6 +1582,15 @@ public class FuncBase {
 		return strReturn;
 	}// 新增funcStatement
 
+	public static String newaddfs(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("newaddfs: arg="+str);
+		
+		state.setSubState(SubScene.SSFuncStatement);
+		
+		return "您已进入函数语句录入模式，请逐行录入，输入\":q\"退出录入模式"; 		
+
+	}// 进入函数语句录入模式
 
 	public static String delfs(StateStack stateStack, String str) {
 		System.out.println("delfs: arg="+str);

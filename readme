@@ -1419,6 +1419,112 @@
 				strTmp += ":>";
 				return strTmp;		
 			}	
+
+
+2018-12-14
+1、新建一个枚举类型，表示子状态，如处于属性编辑状态，或处于函数语句录入状态
+	public enum SubScene {
+		SSNone,
+		SSAttr,
+		SSFuncStatement,
+	
+	}
+2、修改State.java
+	（1）增加一个成员变量
+		private SubScene subState;//记录子状态
+	（2）在构造函数中增加一个成员变量初始化
+		this.subState = SubScene.SSNone;
+3、修改StateService.java
+	（1）在
+			String strReturn = stateTransfer.transferState(idUser,strOrder, strArgs);
+		之前，增加处理，如果是处在属性编辑或函数语句编辑子状态中，就进行相关处理，不进入总的状态机
+	（2）增加两个子状态处理函数
+		属性编辑子状态处理函数
+			private String substateTransferOfAttr(int idUser,String reqContent) {
+				State state = stateTransfer.stateStacks[idUser].getCurrentState();
+				if(reqContent.equals(":q")) {
+					state.setSubState(SubScene.SSNone);
+					return "您已退出属性编辑模式";
+				}
+				//将str从“=”分割为key和value两部分
+				String[] strArray = reqContent.split("=");
+				String strKey = strArray[0];
+				String strValue = (strArray.length>1?strArray[1]:null);
+				String strTable = state.getStrTable();
+				int intId = state.getIntId();
+				
+		        String update = "update "
+		        		+ strTable
+		        		+ " set "
+		        		+ strKey
+		        		+ " = "
+		        		+ "?"
+		        		+ " where "
+		        		+ Const.mapTableId.get(strTable)
+		        		+ " = "
+		        		+ intId
+		        		+ ";";
+		        List<Object> params = new ArrayList<Object>();
+		        params.add(strValue);
+		        DbCommonUtil dbUtil = new DbCommonUtil();
+		        int result = dbUtil.executeUpdate(update, params);
+		        
+		        if(result>0) {
+		        	return "属性"+strKey+"已被更新为"+strValue;
+		        }else {
+		        	return "属性更新失败";
+		        }
+			}
+		和函数语句录入子状态处理函数
+			//TODO
+			private String substateTransferOfFuncStatement(int idUser,String reqContent) {
+				return "";
+			}
+4、修改FuncBase.java
+	（1）新增一个newattr（）函数，只是设置当前状态的子状态为SubScene.SSAttr，并返回一句提示语，请用户直接编辑，输入":q"退出编辑状态
+			public static String newattr(StateStack stateStack, String str) {
+				State state = stateStack.getCurrentState();
+				System.out.println("newAttrForContinueEdit: arg=" + str);
+				
+				//将当前状态的子状态设置为
+				state.setSubState(SubScene.SSAttr);
+				return "进入属性编辑模式，请逐行以key=value形式修改属性，输入\":q\"退出编辑模式"; 
+			}// 进入属性修改模式
+	（2）新增一个newaddfs函数
+			public static String newaddfs(StateStack stateStack, String str) {
+				State state = stateStack.getCurrentState();
+				System.out.println("newaddfs: arg="+str);
+				
+				state.setSubState(SubScene.SSFuncStatement);
+				
+				return "您已进入函数语句录入模式，请逐行录入，输入\":q\"退出录入模式"; 		
+		
+			}// 进入函数语句录入模式
+5、修改Const.java
+	（1）将
+			+ "attr key=value   -修改当前对象的属性\n"
+		改为
+			//+ "attr key=value   -修改当前对象的属性\n"
+			+ "attr key=value   -修改当前对象的属性\n newattr   -进入属性编辑模式\n"
+	（2）在
+			+ "addfs content   -增加一条函数语句function statement\n"
+		之后增加1行
+			+ "newaddfs    -进入函数语句录入模式\n"
+6、修改StateTransfer.java
+	（1）将所有
+			transferMapSTXXX.put("attr", FuncBase::attr);
+		改为
+			transferMapSTXXXc.put("attr", FuncBase::attr);	
+			transferMapSTXXX.put("newattr", FuncBase::newattr);
+	（2）在
+			transferMapSTFunc.put("addfs", FuncBase::addfs);
+		之后增加1行
+			transferMapSTFunc.put("newaddfs", FuncBase::newaddfs);
+
+7、测试newattr命令，成功
+8、测试newaddfs命令，成功
+
+
 ###待改进###
 1、函数语句的输入交互方式
 	addfs时可输入行号，否则默认递增

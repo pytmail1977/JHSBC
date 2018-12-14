@@ -1,10 +1,16 @@
 package org.iscas.tj2.pyt.springboot_mybatis.service;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.iscas.tj2.pyt.springboot_mybatis.Const;
 import org.iscas.tj2.pyt.springboot_mybatis.SceneType;
+import org.iscas.tj2.pyt.springboot_mybatis.SubScene;
+import org.iscas.tj2.pyt.springboot_mybatis.domain.FuncStatement;
 import org.iscas.tj2.pyt.springboot_mybatis.domain.User;
 import org.iscas.tj2.pyt.springboot_mybatis.scene_state.State;
 import org.iscas.tj2.pyt.springboot_mybatis.scene_state.StateStack;
 import org.iscas.tj2.pyt.springboot_mybatis.scene_state.StateTransfer;
+import org.iscas.tj2.pyt.springboot_mybatis.util.DbCommonUtil;
 
 /* 2018-11-18
  * 新建一个StateService，将StateTransfer和StateStack都作为它的成员变量
@@ -55,6 +61,20 @@ public class StateService {
 			stateTransfer.stateStacks[idUser].push(state);	
 			return "进入用户空间";
 		}
+		
+		//2018-12-14 增加处理，如果是处在属性编辑或函数语句编辑子状态中，就进行相关处理，不进入总的状态机
+		//如果是当前处于编辑属性状态
+		if(SubScene.SSAttr == stateTransfer.stateStacks[idUser].getCurrentState().getSubState()) {
+			String strReturn = substateTransferOfAttr(idUser,reqContent);
+			return strReturn;
+		}
+		
+		//如果是当前处于添加函数语句状态
+		if(SubScene.SSFuncStatement == stateTransfer.stateStacks[idUser].getCurrentState().getSubState()) {
+			String strReturn = substateTransferOfFuncStatement(idUser,reqContent);
+			return strReturn;
+		}
+		
 		String strReturn = stateTransfer.transferState(idUser,strOrder, strArgs);
 		/*stateTransfer.transferState(reqContent,strOrder, strArg1, strArg2);
 		String strReturn = stateTransfer.getNowState().getRespContent();*/
@@ -144,4 +164,69 @@ public class StateService {
 				
 	}
 
+	//TODO
+	private String substateTransferOfAttr(int idUser,String reqContent) {
+		State state = stateTransfer.stateStacks[idUser].getCurrentState();
+		if(reqContent.equals(":q")) {
+			state.setSubState(SubScene.SSNone);
+			return "您已退出属性编辑模式";
+		}
+		//将str从“=”分割为key和value两部分
+		String[] strArray = reqContent.split("=");
+		String strKey = strArray[0];
+		String strValue = (strArray.length>1?strArray[1]:null);
+		String strTable = state.getStrTable();
+		int intId = state.getIntId();
+		
+        String update = "update "
+        		+ strTable
+        		+ " set "
+        		+ strKey
+        		+ " = "
+        		+ "?"
+        		+ " where "
+        		+ Const.mapTableId.get(strTable)
+        		+ " = "
+        		+ intId
+        		+ ";";
+        List<Object> params = new ArrayList<Object>();
+        params.add(strValue);
+        DbCommonUtil dbUtil = new DbCommonUtil();
+        int result = dbUtil.executeUpdate(update, params);
+        
+        if(result>0) {
+        	return "属性"+strKey+"已被更新为"+strValue;
+        }else {
+        	return "属性更新失败";
+        }
+	}
+	
+	//TODO
+	private String substateTransferOfFuncStatement(int idUser,String reqContent) {
+		State state = stateTransfer.stateStacks[idUser].getCurrentState();
+
+		if(reqContent == null ) {
+			return "未指定语句内容";
+		}
+		
+		if(reqContent.equals(":q")) {
+			state.setSubState(SubScene.SSNone);
+			return "您已退出函数语句录入模式";
+		}
+		
+		System.out.println("按用户指定的内容增加新的函数语句：");
+		FuncStatement funcStatement = new FuncStatement();
+		funcStatement.setContentFuncstatement(reqContent);		
+		funcStatement.setIdFunction(state.getIntId());
+		int ret = db.createFuncStatement(state.getIntId(),funcStatement);
+				
+		String strReturn = "";		
+		if (0 != ret) {
+			strReturn = "函数语句创建失败";}
+		else {
+			int idFuncStatement = funcStatement.getIdFuncstatement();
+			strReturn = "函数语句已成功创建" + "函数语句Id：" + idFuncStatement;				
+		}	
+		return strReturn;
+	}
 }
