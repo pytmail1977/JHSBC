@@ -95,7 +95,9 @@ public class FuncBase {
         try {
         	while(result.next()) {
 				for (int i = 0; i < result.getMetaData().getColumnCount(); i++) {
-					strReturn += result.getMetaData().getColumnName(i+1) + " = ";
+					//2018-12-17 输出字段名称之前，输出字段序号
+ 					//strReturn += result.getMetaData().getColumnName(i+1) + " = ";
+					strReturn +=  "["+i+"] " +result.getMetaData().getColumnName(i+1) + " = ";
 					Object objTmp = result.getObject(i+1);
 					if(null == objTmp) {
 						strReturn += "null" + "\n";

@@ -1,6 +1,10 @@
 package org.iscas.tj2.pyt.springboot_mybatis.service;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.iscas.tj2.pyt.springboot_mybatis.Const;
 import org.iscas.tj2.pyt.springboot_mybatis.SceneType;
@@ -171,12 +175,48 @@ public class StateService {
 			state.setSubState(SubScene.SSNone);
 			return "您已退出属性编辑模式";
 		}
+        DbCommonUtil dbUtil = new DbCommonUtil();
+        
+		//获取字段序号和字段名
+		String strTable = state.getStrTable();
+		int intId = state.getIntId();
+		String select = "select * from "
+				+ strTable
+				+ " Where "
+				+ Const.mapTableId.get(strTable)
+				+ " = ? ;";
+		
+        List<Object> params1 = new ArrayList<Object>();
+        params1.add(intId);
+        java.sql.ResultSet result1 = dbUtil.executeQuery(select, params1);
+        HashMap<String, String> columnMap = new HashMap<String, String>();
+        try {
+        	while(result1.next()) {
+				for (int i = 0; i < result1.getMetaData().getColumnCount(); i++) {
+					columnMap.put(Integer.toString(i), result1.getMetaData().getColumnName(i+1));			
+				}//for (int i = 0; i < result.getMetaData().getColumnCount(); i++) {
+        	}//while(result.next()) {
+        	
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		//将str从“=”分割为key和value两部分
 		String[] strArray = reqContent.split("=");
 		String strKey = strArray[0];
+		
+		//如果是数字且在字段数量范围你就转化为相应的字段名
+		Pattern pattern = Pattern.compile("[0-9]*");
+		if (pattern.matcher(strArray[0]).matches()) {
+			if(Integer.parseInt(strKey) < columnMap.size() )
+				strKey = columnMap.get(strKey);
+	    }
+		
+		
 		String strValue = (strArray.length>1?strArray[1]:null);
-		String strTable = state.getStrTable();
-		int intId = state.getIntId();
+		//String strTable = state.getStrTable();
+		//int intId = state.getIntId();
 		
         String update = "update "
         		+ strTable
@@ -189,12 +229,12 @@ public class StateService {
         		+ " = "
         		+ intId
         		+ ";";
-        List<Object> params = new ArrayList<Object>();
-        params.add(strValue);
-        DbCommonUtil dbUtil = new DbCommonUtil();
-        int result = dbUtil.executeUpdate(update, params);
+        List<Object> params2 = new ArrayList<Object>();
+        params2.add(strValue);
+
+        int result2 = dbUtil.executeUpdate(update, params2);
         
-        if(result>0) {
+        if(result2>0) {
         	return "属性"+strKey+"已被更新为"+strValue;
         }else {
         	return "属性更新失败";
