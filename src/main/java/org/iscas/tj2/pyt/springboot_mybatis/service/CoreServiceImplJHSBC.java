@@ -160,7 +160,7 @@ public class CoreServiceImplJHSBC implements ICoreService {
 			// 如果不是文本则回复……
 			//去掉对图像、音频、连接等处理，统一在前面作为非文本消息回复无法处理
 			if (!msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_TEXT)) {
-	            respContent += Const.STUser_HELP;
+	            respContent += Const.STRoot_HELP;
 	            textMessage.setContent(respContent);
 	            // 将文本消息对象转换成xml字符串
 	            respMessage = textMessageUtil.messageToxml(textMessage);	

@@ -12,30 +12,124 @@ public class Const {
 	public static final String AdminUserWeixinId = "ocaDy1CWp497l5Kq21mkw3HflzaY";
 	//表名
 	public static final String tablename_User = "User";
-	public static final String tablebame_Role = "Role";
-	public static final String tablebame_FuncProjectRelation = "FuncProjectRelation";
-	public static final String tablebame_FuncStatement = "FuncStatement";
-	public static final String tablebame_Function = "Function";
-	public static final String tablebame_FuncVar = "FuncVar";
-	public static final String tablebame_FuncVarItem = "FuncVarItem";
-	public static final String tablebame_NameSpace = "NameSpace";
-	public static final String tablebame_Permission = "Permission";
-	public static final String tablebame_Project = "Project";
-	public static final String tablebame_RolePRMSRelation = "RolePRMSRelation";
-	public static final String tablebame_Struct = "Struct";
-	public static final String tablebame_StructItem = "StructItem";
-	public static final String tablebame_StructUserRelation = "StructUserRelation";
-	public static final String tablebame_Type = "Type";
-	public static final String tablebame_TypeUserRelation = "TypeUserRelation";
-	public static final String tablebame_UserMessage = "UserMessage";
-	public static final String tablebame_UserMessageTemplet = "UserMessageTemplet";
-	public static final String tablebame_UserRoleRelation = "UserRoleRelation";
-	public static final String tablebame_Var = "Var";
-	public static final String tablebame_VarItem = "VarItem";
-	public static final String tablebame_VarProjectRelation = "VarProjectRelation";
+	public static final String tablename_Role = "Role";
+	public static final String tablename_FuncProjectRelation = "FuncProjectRelation";
+	public static final String tablename_FuncStatement = "FuncStatement";
+	public static final String tablename_Macro = "Macro";
+	public static final String tablename_MacroProjectRelation = "MacroProjectRelation";
+	public static final String tablename_Function = "Function";
+	public static final String tablename_FuncVar = "FuncVar";
+	public static final String tablename_FuncVarItem = "FuncVarItem";
+	//public static final String tablename_NameSpace = "NameSpace";
+	public static final String tablename_Permission = "Permission";
+	public static final String tablename_Project = "Project";
+	public static final String tablename_RolePRMSRelation = "RolePRMSRelation";
+	/*public static final String tablename_Struct = "Struct";
+	public static final String tablename_StructItem = "StructItem";
+	public static final String tablename_StructUserRelation = "StructUserRelation";*/
+	public static final String tablename_Type = "Type";
+	public static final String tablename_TypeItem = "TypeItem";
+	public static final String tablename_TypeProjectRelation = "TypeProjectRelation";
+	//public static final String tablename_TypeUserRelation = "TypeUserRelation";
+	//public static final String tablename_Type = "Type";
 
-	public static final String STCommonUser_HELP = "您可用的命令：\n"
-			+ "help   -列出此帮助信息\n"
+	public static final String tablename_UserMessage = "UserMessage";
+	public static final String tablename_UserMessageTemplet = "UserMessageTemplet";
+	public static final String tablename_UserRoleRelation = "UserRoleRelation";
+	public static final String tablename_Var = "Var";
+	public static final String tablename_VarItem = "VarItem";
+	public static final String tablename_VarProjectRelation = "VarProjectRelation";
+
+	//2019-12-24 按照新的命令结构新增
+	public static final String STRoot_HELP = ""//"根场景下可用的命令：\n"
+			//+ "help   -列出此帮助信息\n"
+			+ "ls   -列出当前的工程\n"
+			+ "cd  id -进入指定的工程\n"
+			+ "new name   -新增一个工程\n"
+			+ "grant id_User id_Project -授予用户id_User权限访问工程id_Project\n";
+
+	public static final String STProject_HELP = ""//"工程场景下您可用的命令：\n"
+			//+ "help   -列出此帮助信息\n"
+			+ "ls   -列出可查看的对象\n"
+			+ "cd object -进入指定的对象列表\n"
+			+ "dc   -退回到上一层";
+
+	public static final String STMacroList_HELP = ""//"宏定义列表场景下可用的命令：\n"
+			//+ "help   -列出此帮助信息\n"
+			+ "ls   -显示宏定义列表\n"
+			+ "more   -显示剩余部分\n"
+			+ "new name=value   -新增一个宏定义\n"
+			+ "cat id   -显示指定宏定义的内容\n"
+			+ "cd id -进入指定id的宏\n"
+			+ "dc   -退回到上一层";
+
+	public static final String STMacro_HELP = ""//"宏定义场景下可用的命令：\n"
+			//+ "help   -列出此帮助信息\n"
+			+ "set   -显示宏的属性\n"
+			+ "set key=value   -设置宏定义的属性\n"
+			+ "dc   -退回到上一层";
+	
+	public static final String STTypeList_HELP = ""//"类型定义列表场景下可用的命令：\n"
+			//+ "help   -列出此帮助信息\n"
+			+ "ls   -显示类型定义列表\n"
+			+ "more   -显示剩余部分\n"
+			+ "new [struct/uion/enum] name   -新增一个类型定义\n"
+			+ "cat id   -显示指定类型定义的内容\n"
+			+ "cd id -进入指定id的类型\n"
+			+ "dc   -退回到上一层";
+
+	public static final String STType_HELP = ""//"类型定义场景下可用的命令：\n"
+			//+ "help   -列出此帮助信息\n"
+			+ "set   -显示类型的属性\n"
+			+ "set key=value   -设置类型定义的属性\n"
+			+ "dc   -退回到上一层";	
+	
+	public static final String STFuncList_HELP = ""//"变量定义列表场景下可用的命令：\n"
+			//+ "help   -列出此帮助信息\n"
+			+ "ls   -显示变量定义列表\n"
+			+ "more   -显示剩余部分\n"
+			+ "new name   -新增一个变量定义\n"
+			+ "cat id   -显示指定变量定义的内容\n"
+			+ "cd id -进入指定id的变量定义\n"
+			+ "dc   -退回到上一层";
+
+	public static final String STFunc_HELP = ""//"变量定义场景下可用的命令：\n"
+			//+ "help   -列出此帮助信息\n"
+			+ "set   -显示变量定义的属性\n"
+			+ "set key=value   -设置变量定义的属性\n"
+			+ "dc   -退回到上一层";	
+
+	public static final String STVarList_HELP = ""//"变量定义列表场景下可用的命令：\n"
+			//+ "help   -列出此帮助信息\n"
+			+ "ls   -显示变量定义列表\n"
+			+ "more   -显示剩余部分\n"
+			+ "new name   -新增一个变量定义\n"
+			+ "cat id   -显示指定变量定义的内容\n"
+			+ "cd id -进入指定id的变量定义\n"
+			+ "dc   -退回到上一层";
+
+	public static final String STVar_HELP = ""//"变量定义场景下可用的命令：\n"
+			//+ "help   -列出此帮助信息\n"
+			+ "set   -显示变量定义的属性\n"
+			+ "set key=value   -设置变量定义的属性\n"
+			+ "dc   -退回到上一层";	
+	
+	//用于查询在不同的场景下应当显示什么帮助内容
+	public static final Map<SceneType, String> mapHelpInfo = new HashMap<SceneType, String>(){{
+			put(SceneType.STRoot, STRoot_HELP);
+			put(SceneType.STProject, STProject_HELP);
+			put(SceneType.STMacroList, STMacroList_HELP);
+			put(SceneType.STMacro, STMacro_HELP);
+			put(SceneType.STTypeList, STTypeList_HELP);
+			put(SceneType.STType, STType_HELP);
+			put(SceneType.STFuncList, STFuncList_HELP);
+			put(SceneType.STFunc, STFunc_HELP);
+			put(SceneType.STVar, STVar_HELP);
+			put(SceneType.STVarList, STVarList_HELP);		
+	}};
+	//2019-12-24 因为大幅度修改命令结构，所以注释掉以下内容
+/*	public static final String STCommonUser_HELP = "您可用的命令：\n"
+			//+ "help   -列出此帮助信息\n"
 			+ "pwd   -显示当前所处的场景\n"
 			+ "lsf   -列出所有函数\n"
 			+ "lst   -列出所有type\n"
@@ -47,7 +141,7 @@ public class Const {
 
 	
 	public static final String STCommonAdmin_HELP = "您可用的命令：\n"
-			+ "help   -列出此帮助信息\n"
+			//+ "help   -列出此帮助信息\n"
 			+ "pwd   -显示当前所处的场景\n"
 			+ "lsp   -列出所有project\n"
 			+ "lst   -列出所有type\n"
@@ -66,7 +160,7 @@ public class Const {
 	
 	//各状态下的帮助信息字符串
 	public static final String STUser_HELP = "您可用的命令：\n"
-			+ "help   -列出此帮助信息\n"
+			//+ "help   -列出此帮助信息\n"
 			+ "pwd   -显示当前所处的场景\n"
 			+ "whoami   -显示当前操作的对象\n"
 			//+ "attr key=value   -修改当前对象的属性值\n"
@@ -88,7 +182,7 @@ public class Const {
 			+ "common   -查看共用对象";
 
 	public static final String STStruct_HELP = "结构体场景下可用的命令：\n"
-			+ "help   -列出此帮助信息\n"
+			//+ "help   -列出此帮助信息\n"
 			+ "pwd   -显示当前所处的场景\n"
 			+ "whoami   -显示当前操作的对象\n"
 			//+ "attr key=value   -修改当前对象的属性值\n"
@@ -100,7 +194,7 @@ public class Const {
 			+ "delsi id   -删除struct item\n"
 			+ "dc   -退回到上一层";
 		public static final String STStructItem_HELP = "结构体字段场景下可用的命令：\n"
-				+ "help   -列出此帮助信息\n"
+				//+ "help   -列出此帮助信息\n"
 				+ "pwd   -显示当前所处的场景\n"
 				+ "whoami   -显示当前操作的对象\n"
 				//+ "attr key=value   -修改当前对象的属性值\n"
@@ -108,7 +202,7 @@ public class Const {
 			+ "newattr   -进入属性编辑模式\n"
 				+ "dc   -退回到上一层";
 	public static final String STType_HELP = "类型场景下可用的命令：\n"
-			+ "help   -列出此帮助信息\n"
+			//+ "help   -列出此帮助信息\n"
 			+ "pwd   -显示当前所处的场景\n"
 			+ "whoami   -显示当前操作的对象\n"
 			//+ "attr key=value   -修改当前对象的属性值\n"
@@ -116,7 +210,7 @@ public class Const {
 			+ "newattr   -进入属性编辑模式\n"
 			+ "dc   -退回到上一层";
 	public static final String STProject_HELP = "工程场景下可用的命令：\n"
-			+ "help   -列出此帮助信息\n"
+			//+ "help   -列出此帮助信息\n"
 			+ "pwd   -显示当前所处的场景\n"
 			+ "whoami   -显示当前操作的对象\n"
 			//+ "attr key=value   -修改当前对象的属性值\n"
@@ -132,7 +226,7 @@ public class Const {
 			+ "delv id   -删除var\n"
 			+ "dc   -退回到上一层";
 		public static final String STFunc_HELP = "函数场景下可用的命令：\n"
-				+ "help   -列出此帮助信息\n"
+				//+ "help   -列出此帮助信息\n"
 				+ "pwd   -显示当前所处的场景\n"
 				+ "whoami   -显示当前操作的对象\n"
 				//+ "attr key=value   -修改当前对象的属性值\n"
@@ -149,7 +243,7 @@ public class Const {
 				+ "delfv id   -删除一个函数局部变量fuction var\n"
 				+ "dc   -退回到上一层";
 			public static final String STFuncStatement_HELP = "函数语句场景下可用的命令：\n"
-					+ "help   -列出此帮助信息\n"
+					//+ "help   -列出此帮助信息\n"
 					+ "pwd   -显示当前所处的场景\n"
 					+ "whoami   -显示当前操作的对象\n"
 					//+ "attr key=value   -修改当前对象的属性值\n"
@@ -157,7 +251,7 @@ public class Const {
 			+ "newattr   -进入属性编辑模式\n"
 					+ "dc   -退回到上一层";
 			public static final String STFuncVar_HELP = "函数局部变量场景下可用的命令：\n"
-					+ "help   -列出此帮助信息\n"
+					//+ "help   -列出此帮助信息\n"
 					+ "pwd   -显示当前所处的场景\n"
 					+ "whoami   -显示当前操作的对象\n"
 					//+ "attr key=value   -修改当前对象的属性值\n"
@@ -169,7 +263,7 @@ public class Const {
 					+ "delfvi   -删除函数局部变量字段Function Var Item\n"
 					+ "dc   -退回到上一层";
 				public static final String STFuncVarItem_HELP = "函数局部变量字段场景下可用的命令：\n"
-						+ "help   -列出此帮助信息\n"
+						//+ "help   -列出此帮助信息\n"
 						+ "pwd   -显示当前所处的场景\n"
 						+ "whoami   -显示当前操作的对象\n"
 						//+ "attr key=value   -修改当前对象的属性值\n"
@@ -177,7 +271,7 @@ public class Const {
 			+ "newattr   -进入属性编辑模式\n"
 						+ "dc   -退回到上一层";
 		public static final String STVar_HELP = "全局变量场景下可用的命令：\n"
-				+ "help   -列出此帮助信息\n"
+				//+ "help   -列出此帮助信息\n"
 				+ "pwd   -显示当前所处的场景\n"
 				+ "whoami   -显示当前操作的对象\n"
 				//+ "attr key=value   -修改当前对象的属性值\n"
@@ -189,7 +283,7 @@ public class Const {
 				+ "delvi  -删除全局变量字段Var Item\n"
 				+ "dc   -退回到上一层";
 			public static final String STVarItem_HELP = "全局变量字段场景下可用的命令：\n"
-					+ "help   -列出此帮助信息\n"
+					//+ "help   -列出此帮助信息\n"
 					+ "pwd   -显示当前所处的场景\n"
 					+ "whoami   -显示当前操作的对象\n"
 					//+ "attr key=value   -修改当前对象的属性值\n"
@@ -212,7 +306,7 @@ public class Const {
 			put(SceneType.STFuncVarItem, STFuncVarItem_HELP);
 			put(SceneType.STVar, STVar_HELP);
 			put(SceneType.STVarItem, STVarItem_HELP);
-	}};
+	}};*/
 	
 	//DbCommonUtil用来初始化数据库连接的
 	//jdbc
@@ -224,19 +318,21 @@ public class Const {
 	//数据库名
 	public static final String dbSchema = "java";
 	
-	//各表名对应的id号
+	//各表名对应的id的字段名
 	public static final HashMap<String,String> mapTableId= new HashMap<String,String>(){{
 		put(tablename_User,"Id_User");
-			put(tablebame_Project,"Id_Project");
-				put(tablebame_Function,"Id_Function");
-					put(tablebame_FuncStatement,"Id_FuncStatement");
-					put(tablebame_FuncVar,"Id_FuncVar");
-						put(tablebame_FuncVarItem,"Id_FuncVarItem");
-				put(tablebame_Var,"Id_Var");
-					put(tablebame_VarItem,"Id_VarItem");
-		put(tablebame_Struct,"Id_Struct");
-			put(tablebame_StructItem,"Id_StructItem");
-		put(tablebame_Type,"Id_Type");
+			put(tablename_Project,"Id_Project");
+				put(tablename_Function,"Id_Function");
+					put(tablename_FuncStatement,"Id_FuncStatement");
+					put(tablename_FuncVar,"Id_FuncVar");
+						put(tablename_FuncVarItem,"Id_FuncVarItem");
+				put(tablename_Var,"Id_Var");
+					put(tablename_VarItem,"Id_VarItem");
+		put(tablename_Type,"Id_Type");
+			put(tablename_TypeItem,"Id_TypeItem");
+		//put(tablename_Type,"Id_Type");
+		put(tablename_Macro,"Id_Macro");
+		put(tablename_MacroProjectRelation ,"Id_MacroProjectRelation");
 	}
 	};
 	
@@ -281,21 +377,32 @@ public class Const {
 	HashSet alias_delvi = new HashSet() {{add("delvi");add("dvi");}};
 	HashSet alias_addvi = new HashSet() {{add("addvi");add("avi");}};	
 	
+	
+	
 	public static final HashMap<String,String> mapOrderIndex_STUser= new HashMap<String,String>(){{
 		put(tablename_User,"Id_User");
-			put(tablebame_Project,"Id_Project");
-				put(tablebame_Function,"Id_Function");
-					put(tablebame_FuncStatement,"Id_FuncStatement");
-					put(tablebame_FuncVar,"Id_FuncVar");
-						put(tablebame_FuncVarItem,"Id_FuncVarItem");
-				put(tablebame_Var,"Id_Var");
-					put(tablebame_VarItem,"Id_VarItem");
-		put(tablebame_Struct,"Id_Struct");
-			put(tablebame_StructItem,"Id_StructItem");
-		put(tablebame_Type,"Id_Type");
+			put(tablename_Project,"Id_Project");
+				put(tablename_Function,"Id_Function");
+					put(tablename_FuncStatement,"Id_FuncStatement");
+					put(tablename_FuncVar,"Id_FuncVar");
+						put(tablename_FuncVarItem,"Id_FuncVarItem");
+				put(tablename_Var,"Id_Var");
+					put(tablename_VarItem,"Id_VarItem");
+				put(tablename_Type,"Id_Type");
+					put(tablename_TypeItem,"Id_TypeItem");
+		put(tablename_Type,"Id_Type");
+		put(tablename_Macro,"Id_Macro");
+		put(tablename_MacroProjectRelation ,"Id_MacroProjectRelation");
 	}
 	};
 
+	
+	//2018-12-20
+	public static final String STProjectObject_LIST = "macro,func,type,var\n";
+
+	
+	
+			
 	
 	public Const() {
 		// TODO Auto   -generated constructor stub	

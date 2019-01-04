@@ -8,6 +8,7 @@ public class State {
 
 	private String strTable; // 上下文所涉及的表名
 	private int intId; //在相关表中的id
+	private String strName; //在相关表中的Name
 	private String strComment; //上下文描述
 	private int intDepth; //上下文深度
 	private SceneType sceneType;//状态所属类型，需在构造函数中初始化
@@ -25,7 +26,7 @@ public class State {
 	 * @param intDepth
 	 * @param strComment
 	 */
-	public State(int intId, String strTable,int intDepth, String strComment,SceneType sceneType) {
+	public State(int intId, String strTable,int intDepth, String strComment,SceneType sceneType,String name) {
 		this.intId = intId;
 		this.strTable = strTable;
 		this.intDepth = intDepth;
@@ -33,6 +34,7 @@ public class State {
 		this.sceneType = sceneType;
 		this.setIsAdmin(false);
 		this.subState = SubScene.SSNone;
+		this.strName = name;
 	}
 
 	public String getStrTable() {
@@ -89,6 +91,14 @@ public class State {
 
 	public void setSubState(SubScene subState) {
 		this.subState = subState;
+	}
+
+	public String getStrName() {
+		return strName;
+	}
+
+	public void setStrName(String strName) {
+		this.strName = strName;
 	}
 
 

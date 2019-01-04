@@ -71,6 +71,161 @@ public class StateTransfer {
 		 * 		
 		 */
 		
+		//2018-12-24新增
+		//初始化SceneType.STRoot场景的转移出口，包括help、ls、cd、new、grant********************
+		HashMap<String, Func<StateStack,String> > transferMapSTRoot = new HashMap<String, Func<StateStack,String>>();   
+		//新增SceneType.STRoot场景的转移出口help
+		transferMapSTRoot.put("help", FuncBase::help);
+		//新增SceneType.STRoot场景的转移出口ls
+		transferMapSTRoot.put("ls", FuncBase::lsProjects);
+		// 新增SceneType.STRoot场景的转移出口cd
+		transferMapSTRoot.put("cd", FuncBase::cdProject);
+		// 新增SceneType.STRoot场景的转移出口new
+		transferMapSTRoot.put("new", FuncBase::addProject);
+		// 新增SceneType.STCommonAdmin场景的转移出口grant
+		transferMapSTRoot.put("grant", FuncBase::grantProject);
+		//所有STRoot状态下的转移都put到transferMapSTRoot中，最后把transferMapSTRoot加入stateMap
+		stateMap.put(SceneType.STRoot, transferMapSTRoot);
+		
+		//初始化SceneType.STProject场景的转移出口，包括help、ls、cd、dc********************
+		HashMap<String, Func<StateStack,String> > transferMapSTProject = new HashMap<String, Func<StateStack,String>>();   
+		//新增SceneType.STProject场景的转移出口help
+		transferMapSTProject.put("help", FuncBase::help);
+		//新增SceneType.STProject场景的转移出口ls
+		transferMapSTProject.put("ls", FuncBase::lsProjectObjects);
+		// 新增SceneType.STProject场景的转移出口cd
+		transferMapSTProject.put("cd", FuncBase::cdProjectObject);
+		// 新增SceneType.STProject场景的转移出口dc
+		transferMapSTProject.put("dc", FuncBase::dc);
+		//所有STProject状态下的转移都put到transferMapSTProject中，最后把transferMapSTProject加入stateMap
+		stateMap.put(SceneType.STProject, transferMapSTProject);		
+	
+		//初始化SceneType.STMacroList场景的转移出口，包括help、ls、cd、new、，more、dc、cat********************
+		HashMap<String, Func<StateStack,String> > transferMapSTMacroList = new HashMap<String, Func<StateStack,String>>();   
+		//新增SceneType.STMacroList场景的转移出口help
+		transferMapSTMacroList.put("help", FuncBase::help);
+		//新增SceneType.STMacroList场景的转移出口ls
+		transferMapSTMacroList.put("ls", FuncBase::lsMacros);
+		//新增SceneType.STMacroList场景的转移出口more
+		transferMapSTMacroList.put("more", FuncBase::more);
+		//新增SceneType.STMacroList场景的转移出口cat
+		transferMapSTMacroList.put("cat", FuncBase::cat);
+		// 新增SceneType.STMacroList场景的转移出口new
+		transferMapSTMacroList.put("new", FuncBase::addMacro);
+		// 新增SceneType.STMacroList场景的转移出口cd
+		transferMapSTMacroList.put("cd", FuncBase::cdMacro);
+		// 新增SceneType.STMacroList场景的转移出口dc
+		transferMapSTMacroList.put("dc", FuncBase::dc);
+		//所有STMacroList状态下的转移都put到transferMapSTMacroList中，最后把transferMapSTMacroList加入stateMap
+		stateMap.put(SceneType.STMacroList, transferMapSTMacroList);
+		
+		//初始化SceneType.STMacro场景的转移出口，包括help、set、dc********************
+		HashMap<String, Func<StateStack,String> > transferMapSTMacro = new HashMap<String, Func<StateStack,String>>();   
+		//新增SceneType.STMacro场景的转移出口help
+		transferMapSTMacro.put("help", FuncBase::help);
+		//新增SceneType.STMacro场景的转移出口set
+		transferMapSTMacro.put("set", FuncBase::set);
+		// 新增SceneType.STMacro场景的转移出口dc
+		transferMapSTMacro.put("dc", FuncBase::dc);
+		//所有STMacro状态下的转移都put到transferMapSTMacro中，最后把transferMapSTMacro加入stateMap
+		stateMap.put(SceneType.STMacro, transferMapSTMacro);		
+
+		
+		//初始化SceneType.STFuncList场景的转移出口，包括help、ls、cd、new、，more、dc、cat********************
+		HashMap<String, Func<StateStack,String> > transferMapSTFuncList = new HashMap<String, Func<StateStack,String>>();   
+		//新增SceneType.STFuncList场景的转移出口help
+		transferMapSTFuncList.put("help", FuncBase::help);
+		//新增SceneType.STFuncList场景的转移出口ls
+		transferMapSTFuncList.put("ls", FuncBase::lsFuncs);
+		//新增SceneType.STFuncList场景的转移出口more
+		transferMapSTFuncList.put("more", FuncBase::more);
+		//新增SceneType.STFuncList场景的转移出口cat
+		transferMapSTFuncList.put("cat", FuncBase::cat);
+		// 新增SceneType.STFuncList场景的转移出口new
+		transferMapSTFuncList.put("new", FuncBase::addFunc);
+		// 新增SceneType.STFuncList场景的转移出口cd
+		transferMapSTFuncList.put("cd", FuncBase::cdFunc);
+		// 新增SceneType.STFuncList场景的转移出口dc
+		transferMapSTFuncList.put("dc", FuncBase::dc);
+		//所有STFuncList状态下的转移都put到transferMapSTFuncList中，最后把transferMapSTFuncList加入stateMap
+		stateMap.put(SceneType.STFuncList, transferMapSTFuncList);
+		
+		//初始化SceneType.STFunc场景的转移出口，包括help、set、dc********************
+		HashMap<String, Func<StateStack,String> > transferMapSTFunc = new HashMap<String, Func<StateStack,String>>();   
+		//新增SceneType.STFunc场景的转移出口help
+		transferMapSTFunc.put("help", FuncBase::help);
+		//新增SceneType.STFunc场景的转移出口set
+		transferMapSTFunc.put("set", FuncBase::set);
+		// 新增SceneType.STFunc场景的转移出口dc
+		transferMapSTFunc.put("dc", FuncBase::dc);
+		//所有STFunc状态下的转移都put到transferMapSTFunc中，最后把transferMapSTFunc加入stateMap
+		stateMap.put(SceneType.STFunc, transferMapSTFunc);	
+		
+		//初始化SceneType.STVarList场景的转移出口，包括help、ls、cd、new、，more、dc、cat********************
+		HashMap<String, Func<StateStack,String> > transferMapSTVarList = new HashMap<String, Func<StateStack,String>>();   
+		//新增SceneType.STVarList场景的转移出口help
+		transferMapSTVarList.put("help", FuncBase::help);
+		//新增SceneType.STVarList场景的转移出口ls
+		transferMapSTVarList.put("ls", FuncBase::lsVars);
+		//新增SceneType.STVarList场景的转移出口more
+		transferMapSTVarList.put("more", FuncBase::more);
+		//新增SceneType.STVarList场景的转移出口cat
+		transferMapSTVarList.put("cat", FuncBase::cat);
+		// 新增SceneType.STVarList场景的转移出口new
+		transferMapSTVarList.put("new", FuncBase::addVar);
+		// 新增SceneType.STVarList场景的转移出口cd
+		transferMapSTVarList.put("cd", FuncBase::cdVar);
+		// 新增SceneType.STVarList场景的转移出口dc
+		transferMapSTVarList.put("dc", FuncBase::dc);
+		//所有STVarList状态下的转移都put到transferMapSTVarList中，最后把transferMapSTVarList加入stateMap
+		stateMap.put(SceneType.STVarList, transferMapSTVarList);
+		
+		//初始化SceneType.STVar场景的转移出口，包括help、set、dc********************
+		HashMap<String, Func<StateStack,String> > transferMapSTVar = new HashMap<String, Func<StateStack,String>>();   
+		//新增SceneType.STVar场景的转移出口help
+		transferMapSTVar.put("help", FuncBase::help);
+		//新增SceneType.STVar场景的转移出口set
+		transferMapSTVar.put("set", FuncBase::set);
+		// 新增SceneType.STVar场景的转移出口dc
+		transferMapSTVar.put("dc", FuncBase::dc);
+		//所有STVar状态下的转移都put到transferMapSTVar中，最后把transferMapSTVar加入stateMap
+		stateMap.put(SceneType.STVar, transferMapSTVar);	
+		
+		
+		//初始化SceneType.STTypeList场景的转移出口，包括help、ls、cd、new、，more、dc、cat********************
+		HashMap<String, Func<StateStack,String> > transferMapSTTypeList = new HashMap<String, Func<StateStack,String>>();   
+		//新增SceneType.STTypeList场景的转移出口help
+		transferMapSTTypeList.put("help", FuncBase::help);
+		//新增SceneType.STTypeList场景的转移出口ls
+		transferMapSTTypeList.put("ls", FuncBase::lsTypes);
+		//新增SceneType.STTypeList场景的转移出口more
+		transferMapSTTypeList.put("more", FuncBase::more);
+		//新增SceneType.STTypeList场景的转移出口cat
+		transferMapSTTypeList.put("cat", FuncBase::cat);
+		// 新增SceneType.STTypeList场景的转移出口new
+		transferMapSTTypeList.put("new", FuncBase::addType);
+		// 新增SceneType.STTypeList场景的转移出口cd
+		transferMapSTTypeList.put("cd", FuncBase::cdType);
+		// 新增SceneType.STTypeList场景的转移出口dc
+		transferMapSTTypeList.put("dc", FuncBase::dc);
+		//所有STTypeList状态下的转移都put到transferMapSTTypeList中，最后把transferMapSTTypeList加入stateMap
+		stateMap.put(SceneType.STTypeList, transferMapSTTypeList);
+		
+		//初始化SceneType.STType场景的转移出口，包括help、set、dc********************
+		HashMap<String, Func<StateStack,String> > transferMapSTType = new HashMap<String, Func<StateStack,String>>();   
+		//新增SceneType.STType场景的转移出口help
+		transferMapSTType.put("help", FuncBase::help);
+		//新增SceneType.STType场景的转移出口set
+		transferMapSTType.put("set", FuncBase::set);
+		// 新增SceneType.STType场景的转移出口dc
+		transferMapSTType.put("dc", FuncBase::dc);
+		//所有STType状态下的转移都put到transferMapSTType中，最后把transferMapSTType加入stateMap
+		stateMap.put(SceneType.STType, transferMapSTType);	
+		
+		
+				
+//2018-12-24新增此注释，以下无用
+/*		
 		//初始化SceneType.STCommonUser场景的转移出口，包括help、pwd、whoami、attr********************
 		HashMap<String, Func<StateStack,String> > transferMapSTCommonUser = new HashMap<String, Func<StateStack,String>>();   
 		//新增SceneType.STCommonUser场景的转移出口help
@@ -404,7 +559,7 @@ public class StateTransfer {
 		transferMapSTVarItem.put("dc", FuncBase::dc);
 		// 所有STVarItem状态下的转移都put到transferMapSTVarItem中，最后把transferMapSTVarItem加入stateMap
 		stateMap.put(SceneType.STVarItem, transferMapSTVarItem);
-		
+*/		
 				
 		/////////////////////////////////////////////////////////////////////////
 		//2018-12-03 新增此注释 以下无用

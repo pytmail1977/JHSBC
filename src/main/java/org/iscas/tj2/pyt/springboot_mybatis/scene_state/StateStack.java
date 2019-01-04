@@ -9,8 +9,12 @@ public class StateStack {
 	private State[ ] stack;
 	
 	//为按场景的枚举类型返回中文，定义如下数组
-	private String[] STCNAME = {
+/*	private String[] STCNAME = {
 			"用户","结构","结构字段","类型","工程","函数","函数语句","函数变量","函数变量字段","全局变量","全局变量字段","共用对象","共用对象(管理员模式)"
+	};*/
+	//2018-12-27改为
+	private String[] STCNAME = {
+			"","","Func","","Type","Type","Macro","","Var",""
 	};
 
 	
@@ -50,7 +54,8 @@ public class StateStack {
 		return strTmp;		
 	}
 	
-	//2018-11-18 增加一个返回当前场景的函数
+	
+	//2018-11-18 增加一个返回当前场景的函数	
 /*	public String getPwd() {
 		String strTmp = "";
 		for(int i = 0;i<top; i++) {
@@ -61,7 +66,7 @@ public class StateStack {
 		strTmp += ":>";
 		return strTmp;		
 	}*/
-	//2018-12-12 如果没有第1层栈，或第1层栈不是STUser那么把第0层栈（即共用对象显示出来），否则不显示。
+/*	//2018-12-12 如果没有第1层栈，或第1层栈不是STUser那么把第0层栈（即共用对象显示出来），否则不显示。
 	public String getPwd() {
 		String strTmp = "";
 		int begin = 0;
@@ -75,6 +80,31 @@ public class StateStack {
 		}
 		strTmp += ":>";
 		return strTmp;		
+	}*/
+	//2018-12-24 修改getPwd函数，不使用增加了Common/Home两个空间后的pwd，在2018-11-18的版本的基础上做改动，当在“STXXList”（根据id是否为0进行判断）一类场景时，不显示id号，
+	//2018-12-24
+	//
+	//	跳过根空间，只输出/
+	//	有对应对象的场景只输出id号
+	//	对象列表场景如MacroList，只输出简写Macro，不输出state的id字段/
+	public String getPwd() {
+		
+		//2018-12-27 不再输出root场景下的用户Id
+		//String strTmp = "";
+		//for(int i = 0;i<top; i++) {
+		String strTmp = "/";
+		for(int i = 1;i<top; i++) {			
+			//strTmp += stack[i].getSceneType().toString();
+			String tmp = STCNAME[stack[i].getSceneType().ordinal()];
+			//20190104
+			//改为输出对象名，如果没有在输出id
+			//strTmp += tmp+(tmp==""?stack[i].getIntId():"");
+			String nameOrId = (stack[i].getStrName() == null?stack[i].getIntId()+"":stack[i].getStrName());		
+			strTmp += tmp+(tmp==""?nameOrId:"");
+			strTmp += "/";
+		}
+		strTmp += ":>";
+		return strTmp;	
 	}
 
 	/**

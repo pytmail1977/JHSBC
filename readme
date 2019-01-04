@@ -1532,7 +1532,7 @@
 		改为
 			strReturn +=  "["+i+"] " +result.getMetaData().getColumnName(i+1) + " = ";
 2、修改StateService.java
-	（1）修改函数为
+	（1）修改substateTransferOfAttr函数为
 			private String substateTransferOfAttr(int idUser,String reqContent) {
 				State state = stateTransfer.stateStacks[idUser].getCurrentState();
 				if(reqContent.equals(":q")) {
@@ -1604,10 +1604,566 @@
 		        	return "属性更新失败";
 		        }
 			}
+			
+2018-12-24~12-29
+0、修改数据库
+	（1）新增一个Macro表
+			CREATE TABLE `java`.`Macro` (
+			  `Id_Macro` INT NOT NULL AUTO_INCREMENT,
+			  `Name_Macro` VARCHAR(45) NULL,
+			  `Value_Macro` VARCHAR(256) NULL,
+			  `Memo_Macro` VARCHAR(256) NULL,
+			  PRIMARY KEY (`Id_Macro`));
+	（2）新增Macro表和Project的关联表
+			CREATE TABLE `MacroProjectRelation` (
+			  `Id_MacroProjectRelation` int(11) NOT NULL AUTO_INCREMENT,
+			  `Id_Macro` int(11) DEFAULT NULL,
+			  `Id_Project` int(11) DEFAULT NULL,
+			  PRIMARY KEY (`Id_MacroProjectRelation`),
+			  KEY `FK_MacroProjectRelation_2_Macro_idx` (`Id_Macro`),
+			  KEY `FK_MacroProjectRelation_2_Project_idx` (`Id_Project`),
+			  CONSTRAINT `FK_MacroProjectRelation_2_Project` FOREIGN KEY (`Id_Project`) REFERENCES `Project` (`Id_Project`) ON DELETE CASCADE ON UPDATE CASCADE,
+			  CONSTRAINT `FK_MacroProjectRelation_2_Macro` FOREIGN KEY (`Id_Macro`) REFERENCES `Macro` (`Id_Macro`) ON DELETE CASCADE ON UPDATE CASCADE
+			) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8
+	（3）修改Project表，新增一个字段Copyright_Project
+	（4）将Type表改名为TypeOld
+	（5）将Struct表改名为Type
+		1）去除和NameSpace表的关联
+		2）增加IsSampleType_Type字段
+		2）改为
+				CREATE TABLE `Type` (
+				  `Id_Type` int(11) NOT NULL AUTO_INCREMENT,
+				  `Name_Type` varchar(45) DEFAULT NULL,
+				  `Memo_Type` varchar(45) DEFAULT NULL,
+				  `Modifier_Type` varchar(45) DEFAULT NULL,
+				  `IsSampleType_Type` int(11) DEFAULT NULL,
+				  PRIMARY KEY (`Id_Type`)
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8
+	（6）将StructItem表改名为TypeItem
+		1）去除和NameSpace表的关联
+		2）和Type表建立两个外键关系，一个表示本Item的类型，一个指向父Type
+		3）改为
+				CREATE TABLE `TypeItem` (
+				  `Id_TypeItem` int(11) NOT NULL AUTO_INCREMENT,
+				  `NO_TypeItem` int(11) DEFAULT NULL,
+				  `Id_ParentType` int(11) DEFAULT NULL,
+				  `Name_TypeItem` varchar(45) DEFAULT NULL,
+				  `DefaultValue_TypeItem` varchar(45) DEFAULT NULL,
+				  `Memo_TypeItem` varchar(45) DEFAULT NULL,
+				  `IsSampleType_TypeItem` int(11) DEFAULT NULL,
+				  `Id_SelfType` int(11) DEFAULT NULL,
+				  PRIMARY KEY (`Id_TypeItem`),
+				  KEY `FK_StructItem_2_Type_idx` (`Id_ParentType`),
+				  KEY `FK_TypeItem_SelfType_2_Type_idx` (`Id_SelfType`),
+				  CONSTRAINT `FK_TypeItem_ParentType_2_Type` FOREIGN KEY (`Id_ParentType`) REFERENCES `Type` (`Id_Type`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  CONSTRAINT `FK_TypeItem_SelfType_2_Type` FOREIGN KEY (`Id_SelfType`) REFERENCES `Type` (`Id_Type`) ON DELETE CASCADE ON UPDATE CASCADE
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8
+	（4）将StructUserRelation表改为TypeProjectRelation表
+		1）改为
+				CREATE TABLE `TypeProjectRelation` (
+				  `Id_TypeProjectRelation` int(11) NOT NULL AUTO_INCREMENT,
+				  `Id_Type` int(11) DEFAULT NULL,
+				  `Id_Project` int(11) DEFAULT NULL,
+				  PRIMARY KEY (`Id_TypeProjectRelation`),
+				  KEY `FK_StructUserRelation_2_User_idx` (`Id_Project`),
+				  KEY `FK_StructUserRelation_2_Struct_idx` (`Id_Type`),
+				  CONSTRAINT `FK_TypeProjectRelation_2_Project` FOREIGN KEY (`Id_Project`) REFERENCES `Project` (`Id_Project`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  CONSTRAINT `FK_TypeProjectRelation_2_Type` FOREIGN KEY (`Id_Type`) REFERENCES `Type` (`Id_Type`) ON DELETE CASCADE ON UPDATE CASCADE
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8
+	 （5）修改Var表
+		1）去除和NameSpace表的关联
+		2）去除ifBreak字段、Changable字段
+		3）增加Blist字段、Wlist字段、IfConst字段、IfStatic字段
+		4）改为
+				CREATE TABLE `Var` (
+				  `Id_Var` int(11) NOT NULL AUTO_INCREMENT,
+				  `Id_Type` int(11) DEFAULT NULL,
+				  `Name_Var` varchar(45) DEFAULT NULL,
+				  `Memo_Var` varchar(45) DEFAULT NULL,
+				  `IfConst_Var` int(11) DEFAULT NULL,
+				  `Value_Var` varchar(45) DEFAULT NULL,
+				  `IfStatic_Var` int(11) DEFAULT NULL,
+				  `Blist_Var` varchar(45) DEFAULT NULL,
+				  `Wlist_Var` varchar(45) DEFAULT NULL,
+				  `IsSampleType_Var` int(11) DEFAULT NULL,
+				  PRIMARY KEY (`Id_Var`),
+				  KEY `FK_Var_2_Type_idx` (`Id_Type`),
+				  CONSTRAINT `FK_Var_2_Type` FOREIGN KEY (`Id_Type`) REFERENCES `Type` (`Id_Type`) ON DELETE CASCADE ON UPDATE CASCADE
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8
+	（6）修改VarItem表
+		1）去除NO字段，增加Name字段
+		2）增加Id_Type字段，并外键指向Type表
+		3）增加IsSampleType_VarItem字段
+		3）改为
+				CREATE TABLE `VarItem` (
+				  `Id_VarItem` int(11) NOT NULL AUTO_INCREMENT,
+				  `Id_Var` int(11) DEFAULT NULL,
+				  `Name_VarItem` varchar(45) DEFAULT NULL,
+				  `Value_VarItem` varchar(45) DEFAULT NULL,
+				  `Memo_VarItem` varchar(45) DEFAULT NULL,
+				  `Id_Type` int(11) DEFAULT NULL,
+				  `IsSampleType_VarItem` int(11) DEFAULT NULL,
+				  PRIMARY KEY (`Id_VarItem`),
+				  KEY `FK_VarItem_2_Var_idx` (`Id_Var`),
+				  KEY `FK_VarItem_2_Type_idx` (`Id_Type`),
+				  CONSTRAINT `FK_VarItem_2_Type` FOREIGN KEY (`Id_Type`) REFERENCES `Type` (`Id_Type`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  CONSTRAINT `FK_VarItem_2_Var` FOREIGN KEY (`Id_Var`) REFERENCES `Var` (`Id_Var`) ON DELETE CASCADE ON UPDATE CASCADE
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8
+	（7）删除UserMessageTemplet表
+	（8）修改Function表
+		1）去除和NameSpace表的关联
+		2）将IdReturnType_Function字段改为int型，外键指向Type
+		3）改为
+				CREATE TABLE `Function` (
+				  `Id_Function` int(11) NOT NULL AUTO_INCREMENT,
+				  `IdReturnType_Function` int(11) DEFAULT NULL,
+				  `Name_Function` varchar(45) DEFAULT NULL,
+				  `IsInline_Function` int(11) DEFAULT NULL,
+				  `IfBreak_Function` int(11) DEFAULT NULL,
+				  `Memo_Function` varchar(45) DEFAULT NULL,
+				  PRIMARY KEY (`Id_Function`),
+				  KEY `FK_Function_2_Type_idx` (`IdReturnType_Function`),
+				  CONSTRAINT `FK_Function_2_Type` FOREIGN KEY (`IdReturnType_Function`) REFERENCES `Type` (`Id_Type`) ON DELETE NO ACTION ON UPDATE NO ACTION
+				) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8
+	（9）修改FuncStatement表
+		1）增加Lable_FuncStatement字段
+		2）改为
+				CREATE TABLE `FuncStatement` (
+				  `Id_FuncStatement` int(11) NOT NULL AUTO_INCREMENT,
+				  `Id_Function` int(11) DEFAULT NULL,
+				  `LineNO_FuncStatement` int(11) DEFAULT NULL,
+				  `Content_FuncStatement` varchar(1000) DEFAULT NULL,
+				  `Memo_FuncStatement` varchar(450) DEFAULT NULL,
+				  `IfBreak_FuncStatement` int(11) DEFAULT NULL,
+				  `IfAnnotate_FuncStatement` int(11) DEFAULT NULL,
+				  `Lable_FuncStatement` varchar(45) DEFAULT NULL,
+				  PRIMARY KEY (`Id_FuncStatement`),
+				  KEY `FK_FuncStatement_2_Function_idx` (`Id_Function`),
+				  CONSTRAINT `FK_FuncStatement_2_Function` FOREIGN KEY (`Id_Function`) REFERENCES `Function` (`Id_Function`) ON DELETE CASCADE ON UPDATE CASCADE
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8
+	（10）删除表NameSpace
+
+1、修改mybatis配置文件，并刷新自动化代码
+	（1）修改mybatis配置文件generatorConfig.xml
+			去掉
+				<javaModelGenerator
+			之下的
+				<property name="useGeneratedKeys" value="true" />
+
+			
+	（2）修改	mybatis配置文件generatorConfig.xml
+			增加Macro表和MacroProjectRelation表
+				<table tableName="java.Macro"
+					domainObjectName="Macro" enableCountByExample="false"
+					enableUpdateByExample="false" enableDeleteByExample="false"
+					enableSelectByExample="false" selectByExampleQueryId="false">
+					<generatedKey column="Id_Macro" sqlStatement="JDBC"/> 
+				</table>
+				
+				<table tableName="java.Macro"
+					domainObjectName="MacroProjectRelation" enableCountByExample="false"
+					enableUpdateByExample="false" enableDeleteByExample="false"
+					enableSelectByExample="false" selectByExampleQueryId="false">
+					<generatedKey column="Id_MacroProjectRelation" sqlStatement="JDBC"/> 
+				</table>
+	（3）修改mybatis配置文件generatorConfig.xml和conf.xml文件
+			1）取消NameSpace表
+			2）将java.TypeUserRelation改为java.TypeProjectRelation
+			3）将StructItem表改为TypeItem
+			4）将Struct表改为Type表
+			5）取消原有Type表
+			
+		
+	（4）备份dao和mapper下的三个表对应的自增内容，以防重新调用mybatis造成自编代码丢失
+	
+			1）StructItemMapper
+				【dao】
+					//2018-12-03 增加
+				List<StructItem> selectStructItemsByStructId(@Param("IdStruct") int intStructId);
+				【mapper】
+					<!-- 2018-12-03 自己加的 -->
+				<select id="selectStructItemsByStructId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+					SELECT StructItem.* FROM StructItem,Struct
+					WHERE Struct.Id_Struct = #{IdStruct,jdbcType=INTEGER}
+					AND Struct.Id_Struct = StructItem.Id_Struct
+				</select>
+			2）StructMapper	
+				【dao】
+					//2018-11-20 新增
+				 List<Struct> selectStructsByUserId(@Param("IdUser") int intUserId);
+				   <!-- 2018-11-20 自己加的 -->
+				 【mapper】
+				  <select id="selectStructsByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+						SELECT Struct.* FROM User,StructUserRelation,Struct
+							WHERE User.Id_User = #{IdUser,jdbcType=INTEGER}
+								AND User.Id_User = StructUserRelation.Id_User
+								AND StructUserRelation.Id_Struct = Struct.Id_Struct
+				  </select>
+			  
+			 3）TypeMapper
+			 	【dao】
+			 	//2018-11-20 新增
+				List<Type> selectTypesByUserId(@Param("IdUser") int intUserId); 
+			    <!-- 2018-11-20 自己加的 -->
+			    【mapper】
+				  <select id="selectTypesByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+						SELECT Type.* FROM User,TypeUserRelation,Type
+							WHERE User.Id_User = #{IdUser,jdbcType=INTEGER}
+								AND User.Id_User = TypeUserRelation.Id_User
+								AND TypeUserRelation.Id_Type = Type.Id_Type
+				  </select>
+	（5）修改mybatis配置文件generatorConfig.xml
+		在每个<table/>标签下增加形如
+			<generatedKey column="Id_FuncStatement" sqlStatement="JDBC"/> 
+		的内容，其中column为实际表列名，根据（https://blog.csdn.net/lioufei0370/article/details/85128797）sqlStatement="JDBC"表示在insert和insertselective语句中增加useGeneratedKeys="true"和keyProperty属性
+	（6）修改conf.xml，增加
+			 <mapper resource="org/iscas/tj2/pyt/springboot_mybatis/mapper/MacroMapper.xml"/>   
+	   	     <mapper resource="org/iscas/tj2/pyt/springboot_mybatis/mapper/MacroProjectRelationMapper.xml"/>  
+	（7）修改mybatis配置文件generatorConfig.xml
+			将
+				targetProject="springboot_mybatis"
+			改为
+				targetProject="jhsbc"
+	（8）在配置文件generatorConfig.xml上右键-》run as-》run mybatis generator，重新生成自动化代码，insertSelective上有useGeneratedKeys，不需要手动添加
+	（9）根据（4）的备份在TypeItemMapper中恢复自定义的代码
+		【dao】
+				//2018-12-30 增加
+				List<TypeItem> selectTypeItemsByTypeId(@Param("IdType") int intTypeId);
+		【mapper】
+			  <!-- 2018-12-30 自己加的 -->
+				<select id="selectTypeItemsByTypeId"
+					parameterType="java.lang.Integer" resultMap="BaseResultMap">
+					SELECT TypeItem.* FROM TypeItem,Type
+					WHERE Type.Id_Type = #{IdType,jdbcType=INTEGER}
+					AND Type.Id_Type = TypeItem.Id_Type
+				</select>			
+2、修改Const.java
+	（1）增加
+		 	public static final String tablebame_Macro = "Macro";
+		 	public static final String tablebame_MacroProjectRelation = "MacroProjectRelation";
+	（2）增加
+			public static final String STProject_LIST = "macro,func,type,var\n";
+	（3）将所有tablebame改为tablebname
+	（4）修改mapTableId和mapOrderIndex_STUser
+		1）增加
+			put(tablename_Macro,"Id_Macro");
+			put(tablename_MacroProjectRelation ,"Id_MacroProjectRelation");
+		2）将
+				put(tablename_Struct,"Id_Struct");
+					put(tablename_StructItem,"Id_StructItem");
+		   改为
+				put(tablename_Type,"Id_Type");
+					put(tablename_TypeItem,"Id_TypeItem");		   
+	（5）注释掉之前的help信息，按照新的命令结构重新组织
+			public static final String STRoot_HELP = "根场景下可用的命令：\n"
+					+ "help   -列出此帮助信息\n"
+					+ "ls   -列出当前的工程\n"
+					+ "cd  id -进入指定的工程\n"
+					+ "new name   -新增一个工程\n"
+					+ "grant id_User id_Project -授予用户id_User权限访问工程id_Project\n";
+		
+			public static final String STProject_HELP = "工程场景下您可用的命令：\n"
+					+ "help   -列出此帮助信息\n"
+					+ "ls   -列出可查看的对象\n"
+					+ "cd object -进入指定的对象列表\n"
+					+ "dc   -退回到上一层";
+		
+			public static final String STMacroList_HELP = "宏定义列表场景下可用的命令：\n"
+					+ "help   -列出此帮助信息\n"
+					+ "ls   -显示宏定义列表\n"
+					+ "more   -显示剩余部分\n"
+					+ "new content   -新增一个宏定义\n"
+					+ "cat id   -显示指定宏定义的内容\n"
+					+ "cd id -进入指定id的宏\n"
+					+ "dc   -退回到上一层";
+		
+			public static final String STMacro_HELP = "宏定义场景下可用的命令：\n"
+					+ "help   -列出此帮助信息\n"
+					+ "set   -显示宏的属性\n"
+					+ "set key=value   -设置宏定义的属性\n"
+					+ "dc   -退回到上一层";
+			
+			public static final String STTypeList_HELP = "类型定义列表场景下可用的命令：\n"
+					+ "help   -列出此帮助信息\n"
+					+ "ls   -显示类型定义列表\n"
+					+ "more   -显示剩余部分\n"
+					+ "new content   -新增一个类型定义\n"
+					+ "cat id   -显示指定类型定义的内容\n"
+					+ "cd id -进入指定id的类型\n"
+					+ "dc   -退回到上一层";
+		
+			public static final String STType_HELP = "类型定义场景下可用的命令：\n"
+					+ "help   -列出此帮助信息\n"
+					+ "set   -显示类型的属性\n"
+					+ "set key=value   -设置类型定义的属性\n"
+					+ "dc   -退回到上一层";	
+			
+			public static final String STFuncList_HELP = "变量定义列表场景下可用的命令：\n"
+					+ "help   -列出此帮助信息\n"
+					+ "ls   -显示变量定义列表\n"
+					+ "more   -显示剩余部分\n"
+					+ "new content   -新增一个变量定义\n"
+					+ "cat id   -显示指定变量定义的内容\n"
+					+ "cd id -进入指定id的变量定义\n"
+					+ "dc   -退回到上一层";
+		
+			public static final String STFunc_HELP = "变量定义场景下可用的命令：\n"
+					+ "help   -列出此帮助信息\n"
+					+ "set   -显示变量定义的属性\n"
+					+ "set key=value   -设置变量定义的属性\n"
+					+ "dc   -退回到上一层";	
+		
+			public static final String STVarList_HELP = "变量定义列表场景下可用的命令：\n"
+					+ "help   -列出此帮助信息\n"
+					+ "ls   -显示变量定义列表\n"
+					+ "more   -显示剩余部分\n"
+					+ "new content   -新增一个变量定义\n"
+					+ "cat id   -显示指定变量定义的内容\n"
+					+ "cd id -进入指定id的变量定义\n"
+					+ "dc   -退回到上一层";
+
+			public static final String STVar_HELP = "变量定义场景下可用的命令：\n"
+					+ "help   -列出此帮助信息\n"
+					+ "set   -显示变量定义的属性\n"
+					+ "set key=value   -设置变量定义的属性\n"
+					+ "dc   -退回到上一层";	
+			
+			//用于查询在不同的场景下应当显示什么帮助内容
+			public static final Map<SceneType, String> mapHelpInfo = new HashMap<SceneType, String>(){{
+					put(SceneType.STRoot, STRoot_HELP);
+					put(SceneType.STProject, STProject_HELP);
+					put(SceneType.STMacroList, STMacroList_HELP);
+					put(SceneType.STMacro, STMacro_HELP);
+					put(SceneType.STTypeList, STMacroList_HELP);
+					put(SceneType.STType, STType_HELP);
+					put(SceneType.STFuncList, STFuncList_HELP);
+					put(SceneType.STFunc, STFunc_HELP);
+					put(SceneType.STVar, STVar_HELP);
+					put(SceneType.STVarList, STVarList_HELP);		
+			}};
+	（6）根据数据库的修改，更改表名常量
+		1）取消public static final String tablename_NameSpace = "NameSpace";
+		2）取消public static final String tablename_Type = "Type";
+		3）取消public static final String tablename_TypeUserRelation = "TypeUserRelation";
+		4）将
+				public static final String tablename_Struct = "Struct";
+				public static final String tablename_StructItem = "StructItem";
+				public static final String tablename_StructUserRelation = "StructUserRelation";
+		  改为
+				public static final String tablename_Type = "Type";
+				public static final String tablename_TypeItem = "TypeItem";
+				public static final String tablename_TypeProjectRelation = "TypeProjectRelation";
+		  
+3、修改SceneType.java
+	（1）整体改为
+			STRoot,
+			//STProjectList,
+				STProject,
+					STFuncList,
+						STFunc,
+					STTypeList,
+						STType,
+					STMacroList,
+						STMacro,
+					STVarList,
+						STVar,
+			
+			//2018-12-24待删	
+			STFuncStatement,
+			STFuncVar,
+			STFuncVarItem,
+			STVarItem,
+			STUser,
+			STTypeItem,
+4、修改FuncBase.java
+	（1）将2018-12-24日前的操作全部注释掉
+		1）将“多个场景的共用功能”全部注释掉
+		2）将“STCommonAdmin所涉及操作”全部注释掉
+		3）将“STCommonUser所涉及操作”全部注释掉
+		4）将“STUser所涉及操作”全部注释掉
+		5）将“STProject所涉及操作”全部注释掉
+		6）备份“场景STStruct所涉及操作”，然后将其中Struct全部替换为Type备用
+	（2）增加
+		public static String lsProjects(StateStack stateStack, String str)
+	（3）增加
+		public static String cdProject(StateStack stateStack, String str)
+	（4）复制函数grant（）改为grantProject（）
+	（5）复制函数whoami（）改为cat（），并将不带参数，改为带参数，参数指定显示哪个对象的属性
+	（6）复制函数addp（）改为addProject（）
+	（7）复制函数help（）、dc（）、newattr（）
+	（8）复制函数attr（）为set（），并改写，在没有参数时调用cat（）输出所有参数
+	（9）新增函数lsProjectObjects（），在STProject场景下，用于ls命令
+	（10）新增函数lsMacros、cdMacros、addMacro
+	（11）复制lss（）、adds（）、dels（）和cds（），分别改为lsTypes（）、addType（）、delType（）和cdType（），将其中的struct替换为type，Struct替换为Type，结构替换为类型。
+	（12）复制lsv（）、addv（）、delv（）和cdv（），分别改为lsVars（）、addVar（）、delVar（）和cdVar（）
+	
+	
+5、修改StateTransfer.java（按照《交互式编程环境及命令v1(1)》对命令进行修改
+	（1）12-24注释掉所有状态转移表初始化的内容
+	（2）修改	
+	
+6、修改StateService.java
+	（1）修改StateServiceOnUserLogin函数
+			//2018-12-24 不再使用common用户空间，一开始就进入用户根场景
+			/*if(fromUserName.equals(Const.AdminUserWeixinId)) {
+				state = new State(Const.UserIdOfAdmin,Const.tablename_User,0,"根用户",SceneType.STCommonAdmin);
+			}else{
+				state = new State(Const.UserIdOfAdmin,Const.tablename_User,0,"根用户",SceneType.STCommonUser);
+			}*/
+			state = new State(idUser,Const.tablename_User,0,"/",SceneType.STRoot);
+	（2）修改StateProccedue函数
+			//2018-12-24不再区分common空间和home空间
+			//2018-12-11 如果是home指令，则直接操作
+			/*if(stateTransfer.stateStacks[idUser].sizeof() == 1 && strOrder.equals("home")) {
+				State state = new State(idUser,Const.tablename_User,1,"用户："+idUser,SceneType.STUser);
+				
+				stateTransfer.stateStacks[idUser].push(state);	
+				return "进入用户空间";
+			}*/	
+7、修改StateStack.java
+ 	（1）修改getPwd函数，
+ 		1）仍然使用2018-11-18的版本，不使用增加了Common/Home两个空间后的pwd
+ 		2）输出对应场景的简写：
+ 			跳过根空间，只输出/
+ 			有对应对象的场景只输出id号
+ 			对象列表场景如MacroList，只输出简写Macro，不输出state的id字段
+ 		3）不再输出root场景下的用户Id
+ 			将
+		 		String strTmp = "";
+				for(int i = 0;i<top; i++) {
+			改为
+				String strTmp = "/";
+				for(int i = 1;i<top; i++) {
+ 	（2）修改
+ 			private String[] STCNAME = {
+				"用户","结构","结构字段","类型","工程","函数","函数语句","函数变量","函数变量字段","全局变量","全局变量字段","共用对象","共用对象(管理员模式)"
+			};
+		为
+			private String[] STCNAME = {
+					"","","Func","","Type","Type","Macro","","Var",""
+			};
+		
+8、修改DbService.java
+	（1）新增
+		public int createMacro(int idProject, Macro macro) 
+	（2）新增
+		public List<Macro> getMacroesInfoByProjectId(int intIdProject)	
+	（3）新增
+		public Macro getMacroByMacroId(int intMacroId)
+	（4）将下列函数中的Struct替换为Type，struct替换为type
+		1）getStructsInfoByUserId
+		2）getStructByStructId
+		3）createStruct
+		4）deleteStructByStructId
+		5）getStructItemsInfoByStructId
+		6）getStructItemByStructItemId
+		7）createStructItem
+		8）deleteStructItemByStructItemId
+	（5）注释掉原有Type相关函数
+9、修改MacroMapper.java
+	（1）新增
+			//2018-12-27
+			List<Macro> selectMacroesByProjectId(@Param("IdProject") int intProjectId);	
+10、修改MacroMapper.xml
+	（1）新增
+		  	<!-- 2018-12-27 自己加的 -->
+			<select id="selectMacroesByProjectId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+				SELECT Macro.* FROM Macro,Project,MacroProjectRelation
+				WHERE Project.Id_Project = #{IdProject,jdbcType=INTEGER}
+				AND Project.Id_Project = MacroProjectRelation.Id_Project
+				AND Macro.Id_Macro = MacroProjectRelation.Id_Macro
+			</select>
+
+
+2019-01-04
+project下的4个场景基本可用，再往下的场景尚无法编辑
+0.修改数据库
+	（1）用当前用户新建一个pub工程，利用mysql客户端修改：
+		1）Id_Project为0
+		2）Id_Permission为0
+		3）Id_Role为0
+		4）Id_RolePRMSRelation为0
+		
+1.修改Const.java
+	（1）注释掉help输出中类似“场景下可用的命令如下：\n”的部分
+	（2）删除所有
+		 + "help   -列出此帮助信息\n"
+2.修改FuncBase.java
+	（1）修改lsProjects函数，区分输出用户自己创建的工程和被授权的工程
+	（2）修改addMacro函数，
+			将
+				macro.setNameMacro(str);
+			改为
+				macro.setNameMacro(strKey);
+				macro.setValueMacro(strValue);
+	（3）将
+			“cd失败，查询不到您指定的对象”
+		替换为
+	（4）修改addType（）为
+			
+3.修改DbService.java
+	（1）新增函数
+		public List<Project> getOtherGrantedProjectsInfoByUserId(int intUserId) {
+	（2）将函数
+			public List<Type> getTypesInfoByUserId(int intUserId) 
+		改为
+			public List<Type> getTypesInfoByProjectId(int intProjectId) 
+	（3）修改函数createType（）
+		0）将public int createType(int idUser,Type type) 改为
+		1）将TypeUserRelationMapper改为TypeProjectRelationMapper
+		2）将typeUserRelationMapper改为typeProjectRelationMapper
+		3）将TypeUserRelation改为typeUserRelation
+		4）将setIdUser改为setIdProject
+	
+4.修改State.java
+	（1）新增一个字段
+		private String strName; //在相关表中的Name
+5.修改StateStack.java
+	（1）修改getPwd()
+		不再输出对象id，而是输出对象名，如果没有在输出id
+		将
+			strTmp += tmp+(tmp==""?stack[i].getIntId():"");
+		改为
+			String nameOrId = (stack[i].getStrName() == null?stack[i].getIntId()+"":stack[i].getStrName());		
+			strTmp += tmp+(tmp==""?nameOrId:"");
+
+6.修改StateTransfer.java
+7.修改ProjectMapper.java
+	（1）新增一个函数
+		 List<Project> selectOtherGrantedProjectsByUserId(@Param("IdUser") int intUserId);
+8.修改ProjectMapper.xml
+	（2）新增一个sql
+		 <!-- 2019-1-4 新增只选取被授权的 -->
+		  <select id="selectOtherGrantedProjectsByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+				SELECT Project.*
+				FROM User,Role,UserRoleRelation,Permission,RolePRMSRelation,Project
+				WHERE User.Id_User = #{IdUser,jdbcType=INTEGER}
+				AND User.Id_User = UserRoleRelation.Id_User
+				AND UserRoleRelation.Id_Role = Role.Id_Role
+				AND Role.Id_Role = RolePRMSRelation.Id_Role
+				AND RolePRMSRelation.Id_Permission = Permission.Id_Permission
+				AND Permission.Id_Project = Project.Id_Project
+				AND Permission.Right_Permission = 1
+		  </select>
+9.修改TypeMapper.java
+	（1）将函数
+		 	List<Type> selectTypesByUserId(@Param("IdUser") int intUserId);
+		替换为
+			List<Type> selectTypesByProjectId(@Param("IdProject") int intProjectId);
+10.修改TypeMapper.xml
+	（1）将
+			<select id="selectTypesByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+				SELECT Type.* FROM User,TypeUserRelation,Type
+					WHERE User.Id_User = #{IdUser,jdbcType=INTEGER}
+						AND User.Id_User = TypeUserRelation.Id_User
+						AND TypeUserRelation.Id_Type = Type.Id_Type
+		    </select>
+		 改为
+
 ###待改进###
 1、函数语句的输入交互方式
 	addfs时可输入行号，否则默认递增
-2、attr进入编辑模式，直接key=value
+\2、attr进入编辑模式，直接key=value
 3、将判断是否有访问权限的代码，归拢为函数
 \4、针对公共代码，增加一种权限——
 

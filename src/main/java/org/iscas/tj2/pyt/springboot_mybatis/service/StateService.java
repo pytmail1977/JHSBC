@@ -58,13 +58,14 @@ public class StateService {
 		
 		//2018-11-18 直接从stateTransfer.transferState（）的返回值获取应当返回用户的提示语
 		strOrder = strOrder.toLowerCase();
+		//2018-12-24不再区分common空间和home空间
 		//2018-12-11 如果是home指令，则直接操作
-		if(stateTransfer.stateStacks[idUser].sizeof() == 1 && strOrder.equals("home")) {
+/*		if(stateTransfer.stateStacks[idUser].sizeof() == 1 && strOrder.equals("home")) {
 			State state = new State(idUser,Const.tablename_User,1,"用户："+idUser,SceneType.STUser);
 			
 			stateTransfer.stateStacks[idUser].push(state);	
 			return "进入用户空间";
-		}
+		}*/
 		
 		//2018-12-14 增加处理，如果是处在属性编辑或函数语句编辑子状态中，就进行相关处理，不进入总的状态机
 		//如果是当前处于编辑属性状态
@@ -145,11 +146,14 @@ public class StateService {
 			
 			//2018-12-11 以上一段改为如下处理，当用户是admin时，第一个状态节点的场景定为STCommonAdmin
 			State state;
-			if(fromUserName.equals(Const.AdminUserWeixinId)) {
+			//2018-12-24 不再使用common用户空间，一开始就进入用户根场景
+/*			if(fromUserName.equals(Const.AdminUserWeixinId)) {
 				state = new State(Const.UserIdOfAdmin,Const.tablename_User,0,"根用户",SceneType.STCommonAdmin);
 			}else{
 				state = new State(Const.UserIdOfAdmin,Const.tablename_User,0,"根用户",SceneType.STCommonUser);
-			}
+			}*/
+			state = new State(idUser,Const.tablename_User,0,"/",SceneType.STRoot,"");
+			
 			stateTransfer.stateStacks[idUser].push(state);
 		}
 		

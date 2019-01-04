@@ -26,7 +26,7 @@ public enum SceneType {
 				STVarItem,
 				*/
 	//2018-11-17新增注释信息
-	STUser, //help,pwd,attr,lsp,lst,lss,cdp,cdt,cds,addp,addt,adds,delp,delt,dels
+/*	STUser, //help,pwd,attr,lsp,lst,lss,cdp,cdt,cds,addp,addt,adds,delp,delt,dels
 	STStruct,//help,pwd,attr,lssi(ls),cdsi(cd),addsi(add),delsi(del),dc
 		STStructItem,//help,pwd,attr,dc
 	STType,//help,pwd,attr,dc
@@ -40,4 +40,29 @@ public enum SceneType {
 		
 	STCommonUser,
 	STCommonAdmin,
+*/	
+	//2018-12-24 增加
+	STRoot,
+	//STProjectList,
+		STProject,
+			STFuncList,
+				STFunc,
+			STTypeList,
+				STType,
+			STMacroList,
+				STMacro,
+			STVarList,
+				STVar,
+	
+	//2018-12-24待删	
+	STFuncStatement,
+	STFuncVar,
+	STFuncVarItem,
+	STVarItem,
+	STUser,
+	STTypeItem,
+	
+
+	
+	
 }

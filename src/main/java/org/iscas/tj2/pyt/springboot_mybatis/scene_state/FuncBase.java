@@ -2,8 +2,10 @@ package org.iscas.tj2.pyt.springboot_mybatis.scene_state;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.iscas.tj2.pyt.springboot_mybatis.Const;
 import org.iscas.tj2.pyt.springboot_mybatis.SceneType;
@@ -12,10 +14,10 @@ import org.iscas.tj2.pyt.springboot_mybatis.domain.FuncStatement;
 import org.iscas.tj2.pyt.springboot_mybatis.domain.FuncVar;
 import org.iscas.tj2.pyt.springboot_mybatis.domain.FuncVarItem;
 import org.iscas.tj2.pyt.springboot_mybatis.domain.Function;
+import org.iscas.tj2.pyt.springboot_mybatis.domain.Macro;
 import org.iscas.tj2.pyt.springboot_mybatis.domain.Project;
-import org.iscas.tj2.pyt.springboot_mybatis.domain.Struct;
-import org.iscas.tj2.pyt.springboot_mybatis.domain.StructItem;
 import org.iscas.tj2.pyt.springboot_mybatis.domain.Type;
+import org.iscas.tj2.pyt.springboot_mybatis.domain.TypeItem;
 import org.iscas.tj2.pyt.springboot_mybatis.domain.Var;
 import org.iscas.tj2.pyt.springboot_mybatis.domain.VarItem;
 import org.iscas.tj2.pyt.springboot_mybatis.service.DbService;
@@ -49,7 +51,7 @@ public class FuncBase {
 	 * 列出此帮助信息
 	 * 根据当前状态所属场景从Const类的mapHelpInfo中查找对应的help字符串，设置到当前状态state的的respContent中
 	 */
-	public static String help(StateStack stateStack, String str) {
+/*	public static String help(StateStack stateStack, String str) {
 		State state = stateStack.getCurrentState();
 		System.out.println("help: arg=" + str);
 		
@@ -178,11 +180,11 @@ public class FuncBase {
 		}
 		return strReturn;
 	}// 退回到上一层
-
+*/
 	//以上是多个场景的共用功能///////////////////////////////////////////////////////////////////////////
 	//以下是场景STCommonAdmin所涉及操作，部分为场景STCommonUser所共用///////////////////////////////////////////////////////////////////////////
 
-
+/*
 	public static String clsp(StateStack stateStack, String str) {
 		State state = stateStack.getCurrentState();
 		System.out.println("clsp: arg=" + str);
@@ -258,14 +260,14 @@ public class FuncBase {
 			//2018-12-03
 			//查询相应的dao对象后，先做是否为空的判断
 			if (project == null ) {
-				return "cd失败，查询不到您指定的对象";			
+				return str+"不存在";			
 			}
 			
 			String strReturn = "进入您的工程:";
 			strReturn += "工程id:" + project.getIdProject() + "; 工程名:"+project.getNameProject(); 
 			
 			int depth = state.getIntDepth();
-			State newState = new State(project.getIdProject(),Const.tablebame_Project,depth+1,"工程："+project.getNameProject(),SceneType.STProject);
+			State newState = new State(project.getIdProject(),Const.tablename_Project,depth+1,"工程："+project.getNameProject(),SceneType.STProject);
 			stateStack.push(newState);	
 			
 			return strReturn;
@@ -293,14 +295,14 @@ public class FuncBase {
 			//2018-12-03
 			//查询相应的dao对象后，先做是否为空的判断
 			if (type == null ) {
-				return "cd失败，查询不到您指定的对象";			
+				return str+"不存在";			
 			}
 			
 			String strReturn = "进入您的类型:";
 			strReturn += "类型id:" + type.getIdType() ; 
 			
 			int depth = state.getIntDepth();
-			State newState = new State(type.getIdType(),Const.tablebame_Type,depth+1,"类型："+type.getIdType(),SceneType.STType);
+			State newState = new State(type.getIdType(),Const.tablename_Type,depth+1,"类型："+type.getIdType(),SceneType.STType);
 			stateStack.push(newState);	
 			
 			return strReturn;
@@ -328,14 +330,14 @@ public class FuncBase {
 			//2018-12-03
 			//查询相应的dao对象后，先做是否为空的判断
 			if (struct == null ) {
-				return "cd失败，查询不到您指定的对象";			
+				return str+"不存在";			
 			}
 			
 			String strReturn = "进入您的结构:";
 			strReturn += "结构id:" + struct.getIdStruct() + "; 结构名:" +struct.getNameStruct(); 
 			
 			int depth = state.getIntDepth();
-			State newState = new State(struct.getIdStruct(),Const.tablebame_Struct,depth+1,"结构："+struct.getIdStruct(),SceneType.STStruct);
+			State newState = new State(struct.getIdStruct(),Const.tablename_Struct,depth+1,"结构："+struct.getIdStruct(),SceneType.STStruct);
 			stateStack.push(newState);	
 			
 			return strReturn;
@@ -581,7 +583,7 @@ public class FuncBase {
 			return "授权失败";
 		}
 	}// 列出所有project
-	
+*/	
 	
 /*	public static String my(StateStack stateStack, String str) {
 		State state = stateStack.getCurrentState();
@@ -603,14 +605,14 @@ public class FuncBase {
 		//2018-12-03
 		//查询相应的dao对象后，先做是否为空的判断
 		if (funcStatement == null ) {
-			return "cd失败，查询不到您指定的对象";			
+			return str+"不存在";			
 		}
 		
 		String strReturn = "进入您的函数语句:";
 		strReturn += "函数语句id:" + funcStatement.getIdFuncstatement() + "; 函数语句行号:" +funcStatement.getLinenoFuncstatement();
 		
 		int depth = state.getIntDepth();
-		State newState = new State(funcStatement.getIdFuncstatement(),Const.tablebame_FuncStatement,depth+1,"函数语句："+funcStatement.getIdFuncstatement(),SceneType.STFuncStatement);
+		State newState = new State(funcStatement.getIdFuncstatement(),Const.tablename_FuncStatement,depth+1,"函数语句："+funcStatement.getIdFuncstatement(),SceneType.STFuncStatement);
 		stateStack.push(newState);	
 		
 		return strReturn;
@@ -621,7 +623,7 @@ public class FuncBase {
 	
 	//以上是场景STCommonAdmin所涉及操作，部分为场景STCommonUser所共用///////////////////////////////////////////////////////////////////////////
 	//以下是场景STCommonUser所涉及操作///////////////////////////////////////////////////////////////////////////
-	public static String clsf(StateStack stateStack, String str) {
+/*	public static String clsf(StateStack stateStack, String str) {
 		State state = stateStack.getCurrentState();
 		System.out.println("clsf: arg=" + str);		
 				
@@ -675,23 +677,23 @@ public class FuncBase {
 		
 		//查询相应的dao对象后，先做是否为空的判断
 		if (function == null ) {
-			return "cd失败，查询不到您指定的对象";			
+			return str+"不存在";			
 		}
 		
 		String strReturn = "进入共用函数:";
 		strReturn += "函数id:" + function.getIdFunction() + "; 函数名:" +function.getNameFunction(); 
 		
 		int depth = state.getIntDepth();
-		State newState = new State(function.getIdFunction(),Const.tablebame_Function,depth+1,"函数："+function.getIdFunction(),SceneType.STFunc);
+		State newState = new State(function.getIdFunction(),Const.tablename_Function,depth+1,"函数："+function.getIdFunction(),SceneType.STFunc);
 		stateStack.push(newState);	
 		
 		return strReturn;
 	}//进入共用函数
-		 
+*/		 
 	//以上是场景STCommonUser所涉及操作///////////////////////////////////////////////////////////////////////////
 	//以下是场景STUser所涉及操作///////////////////////////////////////////////////////////////////////////
 
-
+/*
 	public static String lsp(StateStack stateStack, String str) {
 		State state = stateStack.getCurrentState();
 		System.out.println("lsp: arg=" + str);
@@ -767,14 +769,14 @@ public class FuncBase {
 			//2018-12-03
 			//查询相应的dao对象后，先做是否为空的判断
 			if (project == null ) {
-				return "cd失败，查询不到您指定的对象";			
+				return str+"不存在";			
 			}
 			
 			String strReturn = "进入您的工程:";
 			strReturn += "工程id:" + project.getIdProject() + "; 工程名:"+project.getNameProject(); 
 			
 			int depth = state.getIntDepth();
-			State newState = new State(project.getIdProject(),Const.tablebame_Project,depth+1,"工程："+project.getNameProject(),SceneType.STProject);
+			State newState = new State(project.getIdProject(),Const.tablename_Project,depth+1,"工程："+project.getNameProject(),SceneType.STProject);
 			stateStack.push(newState);	
 			
 			return strReturn;
@@ -802,14 +804,14 @@ public class FuncBase {
 			//2018-12-03
 			//查询相应的dao对象后，先做是否为空的判断
 			if (type == null ) {
-				return "cd失败，查询不到您指定的对象";			
+				return str+"不存在";			
 			}
 			
 			String strReturn = "进入您的类型:";
 			strReturn += "类型id:" + type.getIdType() ; 
 			
 			int depth = state.getIntDepth();
-			State newState = new State(type.getIdType(),Const.tablebame_Type,depth+1,"类型："+type.getIdType(),SceneType.STType);
+			State newState = new State(type.getIdType(),Const.tablename_Type,depth+1,"类型："+type.getIdType(),SceneType.STType);
 			stateStack.push(newState);	
 			
 			return strReturn;
@@ -837,14 +839,14 @@ public class FuncBase {
 			//2018-12-03
 			//查询相应的dao对象后，先做是否为空的判断
 			if (struct == null ) {
-				return "cd失败，查询不到您指定的对象";			
+				return str+"不存在";			
 			}
 			
 			String strReturn = "进入您的结构:";
 			strReturn += "结构id:" + struct.getIdStruct() + "; 结构名:" +struct.getNameStruct(); 
 			
 			int depth = state.getIntDepth();
-			State newState = new State(struct.getIdStruct(),Const.tablebame_Struct,depth+1,"结构："+struct.getIdStruct(),SceneType.STStruct);
+			State newState = new State(struct.getIdStruct(),Const.tablename_Struct,depth+1,"结构："+struct.getIdStruct(),SceneType.STStruct);
 			stateStack.push(newState);	
 			
 			return strReturn;
@@ -1107,10 +1109,10 @@ public class FuncBase {
 		}
 		return strReturn;
 	}// 进入到公共空间
-	
+*/	
 	
 	//以上是场景STUser所涉及操作///////////////////////////////////////////////////////////////////////////
-	//以下是场景STStruct所涉及操作///////////////////////////////////////////////////////////////////////////
+/*	//以下是场景STStruct所涉及操作///////////////////////////////////////////////////////////////////////////
 
 	public static String lssi(StateStack stateStack, String str) {
 		State state = stateStack.getCurrentState();
@@ -1150,14 +1152,14 @@ public class FuncBase {
 			//2018-12-03
 			//查询相应的dao对象后，先做是否为空的判断
 			if (structItem == null ) {
-				return "cd失败，查询不到您指定的对象";			
+				return str+"不存在";			
 			}
 			
 			String strReturn = "进入您的结构字段:";
 			strReturn += "结构字段id:" + structItem.getIdStructitem() + "; 结构字段名:" +structItem.getNameStructitem(); 
 			
 			int depth = state.getIntDepth();
-			State newState = new State(structItem.getIdStructitem(),Const.tablebame_StructItem,depth+1,"结构字段："+structItem.getIdStructitem(),SceneType.STStructItem);
+			State newState = new State(structItem.getIdStructitem(),Const.tablename_StructItem,depth+1,"结构字段："+structItem.getIdStructitem(),SceneType.STStructItem);
 			stateStack.push(newState);	
 			
 			return strReturn;
@@ -1223,7 +1225,7 @@ public class FuncBase {
 			e.printStackTrace();
 			return "参数不正确";
 		}
-	}
+	}*/
 
 	//以上是场景STStruct所涉及操作///////////////////////////////////////////////////////////////////////////
 	//以下是场景STStructItem所涉及操作///////////////////////////////////////////////////////////////////////////
@@ -1236,7 +1238,7 @@ public class FuncBase {
 	//以上是场景STType所涉及操作///////////////////////////////////////////////////////////////////////////
 	//以下是场景STProject所涉及操作///////////////////////////////////////////////////////////////////////////
 	
-	public static String lsf(StateStack stateStack, String str) {
+/*	public static String lsf(StateStack stateStack, String str) {
 		State state = stateStack.getCurrentState();
 		System.out.println("lsf: arg=" + str);		
 		
@@ -1303,14 +1305,14 @@ public class FuncBase {
 		//2018-12-03
 		//查询相应的dao对象后，先做是否为空的判断
 		if (function == null ) {
-			return "cd失败，查询不到您指定的对象";			
+			return str+"不存在";			
 		}
 		
 		String strReturn = "进入您的函数:";
 		strReturn += "函数id:" + function.getIdFunction() + "; 函数名:" +function.getNameFunction(); 
 		
 		int depth = state.getIntDepth();
-		State newState = new State(function.getIdFunction(),Const.tablebame_Function,depth+1,"函数："+function.getIdFunction(),SceneType.STFunc);
+		State newState = new State(function.getIdFunction(),Const.tablename_Function,depth+1,"函数："+function.getIdFunction(),SceneType.STFunc);
 		stateStack.push(newState);	
 		
 		return strReturn;
@@ -1339,14 +1341,14 @@ public class FuncBase {
 		//2018-12-03
 		//查询相应的dao对象后，先做是否为空的判断
 		if (var == null ) {
-			return "cd失败，查询不到您指定的对象";			
+			return str+"不存在";			
 		}
 		
 		String strReturn = "进入您的变量:";
 		strReturn += "变量id:" + var.getIdVar() + "; 变量名:" +var.getNameVar(); 
 		
 		int depth = state.getIntDepth();
-		State newState = new State(var.getIdVar(),Const.tablebame_Var,depth+1,"变量："+var.getIdVar(),SceneType.STVar);
+		State newState = new State(var.getIdVar(),Const.tablename_Var,depth+1,"变量："+var.getIdVar(),SceneType.STVar);
 		stateStack.push(newState);	
 		
 		return strReturn;
@@ -1462,7 +1464,7 @@ public class FuncBase {
 			return "参数不正确";
 		}
 	}// 删除var
-
+*/
 		
 	//以上是场景STProject所涉及操作///////////////////////////////////////////////////////////////////////////
 	//以下是场景STFunc所涉及操作///////////////////////////////////////////////////////////////////////////
@@ -1508,13 +1510,13 @@ public class FuncBase {
 		List<FuncStatement> funcStatements = db.getFuncStatementsInfoByFunctionId(idFunction);
 		String strReturn = "当前工程的函数语句:";
 		Iterator<FuncStatement> iter= funcStatements.iterator();
-		int i=0;
+		//int i=0;
 		while(iter.hasNext()) {
-			i++;
-			strReturn += "\n函数语句"+i+":\n";
+			//i++;
+			//strReturn += "\n函数语句"+i+":\n";
 			FuncStatement funcStatement = iter.next();
 			//strReturn += "函数语句id:" + funcStatement.getIdFuncstatement() + "; 函数语句行号:"+funcStatement.getLinenoFuncstatement(); 
-			strReturn += "函数语句id:" + funcStatement.getIdFuncstatement() + "; 函数语句:"+funcStatement.getContentFuncstatement(); 
+			strReturn += "函数语句id:" + funcStatement.getIdFuncstatement() + "; 函数语句:"+funcStatement.getContentFuncstatement()+"\n"; 
 		}
 
 		return strReturn;
@@ -1544,14 +1546,14 @@ public class FuncBase {
 		//2018-12-03
 		//查询相应的dao对象后，先做是否为空的判断
 		if (funcStatement == null ) {
-			return "cd失败，查询不到您指定的对象";			
+			return str+"不存在";			
 		}
 		
 		String strReturn = "进入您的函数语句:";
 		strReturn += "函数语句id:" + funcStatement.getIdFuncstatement() + "; 函数语句行号:" +funcStatement.getLinenoFuncstatement();
 		
 		int depth = state.getIntDepth();
-		State newState = new State(funcStatement.getIdFuncstatement(),Const.tablebame_FuncStatement,depth+1,"函数语句："+funcStatement.getIdFuncstatement(),SceneType.STFuncStatement);
+		State newState = new State(funcStatement.getIdFuncstatement(),Const.tablename_FuncStatement,depth+1,"函数语句："+funcStatement.getIdFuncstatement(),SceneType.STFuncStatement,"");
 		stateStack.push(newState);	
 		
 		return strReturn;
@@ -1636,12 +1638,12 @@ public class FuncBase {
 		List<FuncVar> funcFuncVars = db.getFuncVarsInfoByFunctionId(idFunction);
 		String strReturn = "当前工程的函数变量:";
 		Iterator<FuncVar> iter= funcFuncVars.iterator();
-		int i=0;
+		//int i=0;
 		while(iter.hasNext()) {
-			i++;
-			strReturn += "\n函数变量"+i+":\n";
+			//i++;
+			//strReturn += "\n函数变量"+i+":\n";
 			FuncVar funcFuncVar = iter.next();
-			strReturn += "函数变量id:" + funcFuncVar.getIdFuncvar() + "; 函数变量名:"+funcFuncVar.getNameFuncvar(); 
+			strReturn += "函数变量id:" + funcFuncVar.getIdFuncvar() + "; 函数变量名:"+funcFuncVar.getNameFuncvar()+"\n"; 
 		}
 
 		return strReturn;
@@ -1671,14 +1673,14 @@ public class FuncBase {
 		//2018-12-03
 		//查询相应的dao对象后，先做是否为空的判断
 		if (funcFuncVar == null ) {
-			return "cd失败，查询不到您指定的对象";			
+			return str+"不存在";			
 		}
 		
 		String strReturn = "进入您的函数变量:";
 		strReturn += "函数变量id:" + funcFuncVar.getIdFuncvar() + "; 函数变量名:" +funcFuncVar.getNameFuncvar(); 
 		
 		int depth = state.getIntDepth();
-		State newState = new State(funcFuncVar.getIdFuncvar(),Const.tablebame_FuncVar,depth+1,"函数变量："+funcFuncVar.getIdFuncvar(),SceneType.STFuncVar);
+		State newState = new State(funcFuncVar.getIdFuncvar(),Const.tablename_FuncVar,depth+1,"函数变量："+funcFuncVar.getIdFuncvar(),SceneType.STFuncVar,funcFuncVar.getNameFuncvar());
 		stateStack.push(newState);	
 		
 		return strReturn;
@@ -1703,12 +1705,12 @@ public class FuncBase {
 		int ret = db.createFuncVar(state.getIntId(),funcFuncVar);
 		
 		
-		String strReturn = "";		
+		String strReturn = str;		
 		if (0 != ret) {
-			strReturn = "函数变量创建失败";}
+			strReturn = "创建失败";}
 		else {
 			int idFuncVar = funcFuncVar.getIdFuncvar();
-			strReturn = "函数变量已成功创建" + "函数变量Id：" + idFuncVar;				
+			strReturn = "创建成功，" + "函数变量Id：" + idFuncVar;				
 		}	
 		return strReturn;
 	}// 新增funcFuncVar
@@ -1763,12 +1765,12 @@ public class FuncBase {
 		List<FuncVarItem> funcFuncVarItems = db.getFuncVarItemsInfoByFuncVarId(idFuncVar);
 		String strReturn = "您定义的函数变量字段:";
 		Iterator <FuncVarItem> iter= funcFuncVarItems.iterator();
-		int i=0;
+		//int i=0;
 		while(iter.hasNext()) {
-			i++;
-			strReturn += "\n函数变量字段"+i+":\n";
+			//i++;
+			//strReturn += "\n函数变量字段"+i+":\n";
 			FuncVarItem funcFuncVarItem = iter.next();
-			strReturn += "函数变量字段id:" + funcFuncVarItem.getIdFuncvaritem() + "; 函数变量字段名:"+funcFuncVarItem.getNameFuncvaritem(); 
+			strReturn += "函数变量字段id:" + funcFuncVarItem.getIdFuncvaritem() + "; 函数变量字段名:"+funcFuncVarItem.getNameFuncvaritem()+"\n"; 
 		}
 
 		return strReturn;
@@ -1791,14 +1793,14 @@ public class FuncBase {
 			//2018-12-03
 			//查询相应的dao对象后，先做是否为空的判断
 			if (funcFuncVarItem == null ) {
-				return "cd失败，查询不到您指定的对象";			
+				return str+"不存在";			
 			}
 			
 			String strReturn = "进入您的函数变量字段:";
 			strReturn += "函数变量字段id:" + funcFuncVarItem.getIdFuncvaritem() + "; 函数变量字段名:" +funcFuncVarItem.getNameFuncvaritem(); 
 			
 			int depth = state.getIntDepth();
-			State newState = new State(funcFuncVarItem.getIdFuncvaritem(),Const.tablebame_FuncVarItem,depth+1,"函数变量字段："+funcFuncVarItem.getIdFuncvaritem(),SceneType.STFuncVarItem);
+			State newState = new State(funcFuncVarItem.getIdFuncvaritem(),Const.tablename_FuncVarItem,depth+1,"函数变量字段："+funcFuncVarItem.getIdFuncvaritem(),SceneType.STFuncVarItem,funcFuncVarItem.getNameFuncvaritem());
 			stateStack.push(newState);	
 			
 			return strReturn;
@@ -1883,12 +1885,12 @@ public class FuncBase {
 		List<VarItem> varItems = db.getVarItemsInfoByVarId(idVar);
 		String strReturn = "您定义的变量字段:";
 		Iterator <VarItem> iter= varItems.iterator();
-		int i=0;
+		//int i=0;
 		while(iter.hasNext()) {
-			i++;
-			strReturn += "\n变量字段"+i+":\n";
+			//i++;
+			//strReturn += "\n变量字段"+i+":\n";
 			VarItem varItem = iter.next();
-			strReturn += "变量字段id:" + varItem.getIdVaritem() + "; 变量字段注释:"+varItem.getMemoVaritem(); 
+			strReturn += "变量字段id:" + varItem.getIdVaritem() + "; 变量字段注释:"+varItem.getMemoVaritem()+"\n"; 
 		}
 
 		return strReturn;
@@ -1911,14 +1913,14 @@ public class FuncBase {
 			//2018-12-03
 			//查询相应的dao对象后，先做是否为空的判断
 			if (varItem == null ) {
-				return "cd失败，查询不到您指定的对象";			
+				return str+"不存在";			
 			}
 			
 			String strReturn = "进入您的变量字段:";
 			strReturn += "变量字段id:" + varItem.getIdVaritem() + "; 变量字段注释:" +varItem.getMemoVaritem(); 
 			
 			int depth = state.getIntDepth();
-			State newState = new State(varItem.getIdVaritem(),Const.tablebame_VarItem,depth+1,"变量字段："+varItem.getIdVaritem(),SceneType.STVarItem);
+			State newState = new State(varItem.getIdVaritem(),Const.tablename_VarItem,depth+1,"变量字段："+varItem.getIdVaritem(),SceneType.STVarItem,varItem.getNameVaritem());
 			stateStack.push(newState);	
 			
 			return strReturn;
@@ -1944,12 +1946,12 @@ public class FuncBase {
 		int ret = db.createVarItem(var);
 		
 		
-		String strReturn = "";		
+		String strReturn = str;		
 		if (0 != ret) {
-			strReturn = "变量字段创建失败";}
+			strReturn = "创建失败";}
 		else {
 			int idVarItem = var.getIdVaritem();
-			strReturn = "变量字段已成功创建" + "变量字段Id：" + idVarItem;			
+			strReturn = "创建成功，" + "变量字段Id：" + idVarItem;			
 		}		
 		return strReturn;
 	}// 新增var item
@@ -1985,8 +1987,11 @@ public class FuncBase {
 	}// 删除全局变量字段Var Item
 
 	//以上是场景STVar所涉及操作///////////////////////////////////////////////////////////////////////////
-	//以下是场景STVSTVarItemar所涉及操作///////////////////////////////////////////////////////////////////////////
+	//以下是场景STVSTVarItem所涉及操作///////////////////////////////////////////////////////////////////////////
 	//无操作
+	
+	
+	
 	
 	//2018-11-17 重新梳理每个场景可做的操作后注释掉以下内容
 /*
@@ -2038,4 +2043,963 @@ public class FuncBase {
 		return null;
 	}
 	*/
+	
+	
+	//以上是2018-12-24日前的操作///////////////////////////////////////////////////////////////////////////
+	//以下是2018-12-24日之后新增的操作///////////////////////////////////////////////////////////////////////////
+
+	//以下是各场景通用操作/////////////////////////////////////////////////
+
+	//以上是STRoot场景所需操作/////////////////////////////////////////////////
+	public static String help(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("help: arg=" + str);
+		
+		//2018-11-18 修改现有的两个转移处理函数help和pwd，取消对state.respContent的写入
+		//state.setRespContent(Const.mapHelpInfo.get(state.getSceneType()));
+		//return state.getRespContent();
+		
+		return "当前场景: " + stateStack.getPwd() + "\n" + Const.mapHelpInfo.get(state.getSceneType());
 	}
+
+	public static String cat(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("cat: arg=" + str);
+
+		String strReturn = "属性：\n";//state.getStrComment() + "\n";
+		String strTable = state.getStrTable();
+		
+		int intId = 0;
+		try {
+			if(null != str) {
+				intId  = Integer.parseInt(str);
+			}
+			
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "参数格式不正确";
+		}
+		
+		
+
+		String select = "select * from "
+				+ strTable
+				+ " Where "
+				+ Const.mapTableId.get(strTable)
+				+ " = ? ;";
+		
+        List<Object> params = new ArrayList<Object>();
+        params.add(intId);
+        java.sql.ResultSet result = dbUtil.executeQuery(select, params);
+        
+        try {
+        	while(result.next()) {
+				for (int i = 0; i < result.getMetaData().getColumnCount(); i++) {
+					//2018-12-17 输出字段名称之前，输出字段序号
+ 					//strReturn += result.getMetaData().getColumnName(i+1) + " = ";
+					strReturn +=  "["+i+"] " +result.getMetaData().getColumnName(i+1) + " = ";
+					Object objTmp = result.getObject(i+1);
+					if(null == objTmp) {
+						strReturn += "null" + "\n";
+					}else {
+						strReturn += objTmp.toString() + "\n";
+					}//if(null == objTmp) {
+				}//for (int i = 0; i < result.getMetaData().getColumnCount(); i++) {
+        	}//while(result.next()) {
+        	
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "查询属性失败";
+		}
+    	
+		return strReturn;
+		
+		
+	}// 显示当前操作的对象
+
+	public static String set(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("set: arg=" + str);
+
+		int intId = state.getIntId();
+
+		if(str == null) {
+			return cat(stateStack,""+intId);
+		}
+		
+		
+		////////////////////////
+		//获取字段序号和字段名
+		String strTable = state.getStrTable();
+		String select = "select * from "
+				+ strTable
+				+ " Where "
+				+ Const.mapTableId.get(strTable)
+				+ " = ? ;";
+		
+        List<Object> params1 = new ArrayList<Object>();
+        params1.add(intId);
+        java.sql.ResultSet result1 = dbUtil.executeQuery(select, params1);
+        HashMap<String, String> columnMap = new HashMap<String, String>();
+        try {
+        	while(result1.next()) {
+				for (int i = 0; i < result1.getMetaData().getColumnCount(); i++) {
+					columnMap.put(Integer.toString(i), result1.getMetaData().getColumnName(i+1));			
+				}//for (int i = 0; i < result.getMetaData().getColumnCount(); i++) {
+        	}//while(result.next()) {
+        	
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//将str从“=”分割为key和value两部分
+		String[] strArray = str.split("=");
+		String strKey = strArray[0];
+		Pattern pattern = Pattern.compile("[0-9]*");
+		if (pattern.matcher(strArray[0]).matches()) {
+			if(Integer.parseInt(strKey) < columnMap.size() )
+				strKey = columnMap.get(strKey);
+	    }
+		
+		
+		String strValue = (strArray.length>1?strArray[1]:null);
+		
+        String update = "update "
+        		+ strTable
+        		+ " set "
+        		+ strKey
+        		+ " = "
+        		+ "?"
+        		+ " where "
+        		+ Const.mapTableId.get(strTable)
+        		+ " = "
+        		+ intId
+        		+ ";";
+        List<Object> params2 = new ArrayList<Object>();
+        params2.add(strValue);
+
+        int result2 = dbUtil.executeUpdate(update, params2);
+        
+        if(result2>0) {
+        	return "属性"+strKey+"已被更新为"+strValue;
+        }else {
+        	return "属性更新失败";
+        }
+		
+	}// 修改当前对象的属性
+	
+	//2018-12-14 新增一个newattr（）函数，只是设置当前状态的子状态为SubScene.SSAttr，并返回一句提示语，请用户直接编辑，输入":q"退出编辑状态
+	public static String newattr(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("newAttrForContinueEdit: arg=" + str);
+		
+		//将当前状态的子状态设置为
+		state.setSubState(SubScene.SSAttr);
+		return "您已进入属性编辑模式，请逐行以key=value形式修改属性，输入\":q\"退出编辑模式"; 
+	}// 进入属性修改模式
+	
+	public static String dc(StateStack stateStack, String str) {
+		
+		System.out.println("dc: arg=" + str);
+		
+		String strReturn = null;
+		if(stateStack.sizeof()>1) {
+			stateStack.pop();
+			State state = stateStack.getCurrentState();
+			//strReturn = "dc到 "+ state.getSceneType().toString() + ": ";
+			strReturn = "dc到 "+ stateStack.getPwd()+"\n";
+			//strReturn += state.getStrComment() +"\n";
+			//2018-12-11 dc后不输出help信息（太乱）
+			//strReturn += Const.mapHelpInfo.get(state.getSceneType());
+		}else {
+			strReturn = "无法进行dc操作，你已经在根路径";
+		}
+		return strReturn;
+	}// 退回到上一层
+
+	//TODO
+	public static String more(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("more: arg=" + str);		
+		
+		int id = state.getIntId();				
+		System.out.println("列出剩余部分：");
+		return "no more";
+	}// more
+	
+	
+	//以上是各场景通用操作/////////////////////////////////////////////////
+	//以下是STRoot场景所需操作///////////////////////////////////////////////////
+	
+	public static String addProject(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("addProject: arg="+str);
+		
+		if(str == null ) {
+			return "未指定工程名";
+		}
+		
+		System.out.println("按用户指定的工程名增加新的工程：");
+		Project project = new Project();
+		project.setNameProject(str);
+		
+		int ret = db.createProject(state.getIntId(),project);
+		
+		
+		String strReturn = str;		
+		if (0 != ret) {
+			strReturn = "创建失败";}
+		else {
+			int idProject = project.getIdProject();
+			strReturn = "创建成功，" + "工程Id：" + idProject;				
+		}		
+		return strReturn;
+	}// 新增一个project
+	
+	public static String lsProjects(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("lsProjects: arg=" + str);
+				
+		System.out.println("查询用户的工程信息：");
+		
+		String strReturn = "共用代码:\n";
+		strReturn += "工程id:0; 工程名:pub"+"\n"; 
+		
+		//20190104 
+		//区分输出用户自己创建的工程和被授权的工程
+		List<Project> projects = db.getSelfCreatedProjectsInfoByUserId(state.getIntId());
+		strReturn += "您创建的工程:\n";
+		Iterator <Project> iter= projects.iterator();
+		while(iter.hasNext()) {
+			Project proj = iter.next();
+			strReturn += "工程id:" + proj.getIdProject() + "; 工程名:"+proj.getNameProject()+"\n"; 
+		}
+		
+		projects = db.getOtherGrantedProjectsInfoByUserId(state.getIntId());
+		strReturn += "被授权访问的工程:\n";
+		iter= projects.iterator();
+		while(iter.hasNext()) {
+			Project proj = iter.next();
+			strReturn += "工程id:" + proj.getIdProject() + "; 工程名:"+proj.getNameProject()+"\n"; 
+		}
+
+		return strReturn;
+	}// 列出所有project
+	
+	public static String grantProject(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("grantProject: arg=" + str);
+				
+		if(str == null ) {
+			return "未指定参数";
+		}
+		
+		String[] strArray = str.split(" ");
+		if(strArray.length<2) {
+			return "参数数目不够";
+		}
+
+		String strArg1 = strArray[0];// (strArray.length>0?strArray[0]:null);
+		String strArg2 = strArray[1];// (strArray.length>1?strArray[1]:null);
+		
+		int idProject = -1;
+		int idUser = -1;
+		
+		try {
+			if(null != strArg1) {
+				idUser  = Integer.parseInt(strArg1);
+			}
+			
+			if(null != strArg2) {
+				idProject  = Integer.parseInt(strArg2);
+			}
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "参数格式不正确";
+					
+		}
+		
+		if(idUser <0 || idProject<0) {
+			return "参数格式不正确";
+		}
+		
+		Project  project = db.getProjectByProjectId(idProject);
+		if(null == project) {
+			return "指定工程不存在";
+		}
+		
+		System.out.println("指定工程存在，id="+project.getIdProject());
+		
+		System.out.println("查询用户创建（非仅被授权）的工程信息：");
+		List<Project> projects = db.getSelfCreatedProjectsInfoByUserId(state.getIntId());
+		
+
+		boolean hasProj = false;
+		Iterator <Project> iter= projects.iterator();
+		int i=0;
+		while(iter.hasNext()) {
+			i++;
+			Project proj = iter.next();
+			if(idProject == proj.getIdProject()) {
+				hasProj = true;
+				break;
+			}
+		}
+		
+		if(! hasProj) {
+			return "您对指定的工程"+idProject+"没有权限";
+		}
+		
+		int ret = db.grantProjectToUser(idUser,idProject);
+		if (ret == 0 ) {
+			return "已将工程"+idProject+"授予用户"+idUser;
+		}else {
+			return "授权失败";
+		}
+	}// 列出所有project
+	
+	public static String cdProject(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("cdProject: arg="+str);
+		
+		if(str == null ) {
+			return "未指定参数";
+		}
+		
+		System.out.println("查询用户指定的工程信息：");
+		
+		try {
+			int id = Integer.parseInt(str);
+			Project project = db.getProjectByProjectId(id);
+			
+			//2018-12-03
+			//查询相应的dao对象后，先做是否为空的判断
+			if (project == null ) {
+				return str+"不存在";			
+			}
+			
+			String strReturn = "进入您的工程:";
+			strReturn += "工程id:" + project.getIdProject() + "; 工程名:"+project.getNameProject(); 
+			
+			int depth = state.getIntDepth();
+			State newState = new State(project.getIdProject(),Const.tablename_Project,depth+1,"工程："+project.getNameProject(),SceneType.STProject,project.getNameProject());
+			stateStack.push(newState);	
+			
+			return strReturn;
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "参数不正确";
+		}
+	}// 进入指定的project
+
+	//以上STRoot场景通用操作/////////////////////////////////////////////////
+	//以下是STProject场景所需操作///////////////////////////////////////////////////
+
+	public static String lsProjectObjects(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("lsObjects: arg=" + str);
+				
+		System.out.println("列出在工程下可查的对象信息：");
+
+
+		String strReturn = Const.STProjectObject_LIST;
+		return strReturn;
+	}// 列出所有project
+
+
+	
+	public static String cdProjectObject(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("cdProject: arg="+str);
+		
+		if(str == null ) {
+			return "未指定参数";
+		}
+		
+		SceneType scene;
+		String strTable = "";
+		switch(str){
+		case "macro": 
+			scene = SceneType.STMacroList;
+			strTable = Const.tablename_Macro;
+			break;
+		case "func": 
+			scene = SceneType.STFuncList;
+			strTable = Const.tablename_Function;
+			break;
+		case "type": 
+			scene = SceneType.STTypeList;
+			strTable = Const.tablename_Type;
+			break;
+		case "var": 
+			scene = SceneType.STVarList;
+			strTable = Const.tablename_Var;
+			break;
+		default:
+			return "参数不正确";
+		}
+		
+		String strReturn = "进入"+str+"列表";
+		
+		int depth = state.getIntDepth();
+		int idProject = state.getIntId();
+		State newState = new State(idProject,strTable,depth+1,"str"+"列表",scene,"");
+		stateStack.push(newState);	
+		
+		return strReturn;
+	}
+	
+
+	
+	
+	//以上是STProject场景所需操作/////////////////////////////////////////////////
+	//以下是STMacroList场景所需操作///////////////////////////////////////////////////
+
+	public static String lsMacros(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("lsMacros: arg=" + str);		
+		
+		int idProject = state.getIntId();				
+		System.out.println("查询属于当前工程的宏定义：");
+		List<Macro> macros = db.getMacroesInfoByProjectId(idProject);
+		String strReturn = "当前工程的宏定义:\n";
+		Iterator<Macro> iter= macros.iterator();
+		//int i=0;
+		while(iter.hasNext()) {
+			//i++;
+			//strReturn += "\n宏定义"+i+":\n";
+			Macro macro = iter.next();
+			strReturn += "宏定义id:" + macro.getIdMacro() + "; 宏定义内容:"+macro.getNameMacro() +"\n"; 
+		}
+
+		return strReturn;
+	}// 列出macro
+	
+	public static String cdMacro(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("cdMacro: arg="+str);
+		
+		
+		if(str == null ) {
+			return "未指定参数";
+		}
+		
+		System.out.println("查询用户指定的宏定义信息：");
+		
+		Macro macro;
+		
+		try {
+			int id = Integer.parseInt(str);
+			macro = db.getMacroByMacroId(id);
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "参数不正确";
+		}
+				
+		//2018-12-03
+		//查询相应的dao对象后，先做是否为空的判断
+		if (macro == null ) {
+			return str+"不存在";			
+		}
+		
+		String strReturn = "进入您的宏定义:";
+		strReturn += "宏id:" + macro.getIdMacro() + "; 宏名:" +macro.getNameMacro(); 
+		
+		int depth = state.getIntDepth();
+		State newState = new State(macro.getIdMacro(),Const.tablename_Macro,depth+1,"宏："+macro.getIdMacro(),SceneType.STMacro,macro.getNameMacro());
+		stateStack.push(newState);	
+		
+		return strReturn;
+	}// 进入macro
+	
+	public static String addMacro(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("addMacro: arg="+str);
+		
+		if(str == null ) {
+			return "未指定宏定义名";
+		}
+		
+		//将str从“=”分割为key和value两部分
+		String[] strArray = str.split("=");
+		String strKey = strArray[0];
+		String strValue = (strArray.length>1?strArray[1]:null);
+		
+		System.out.println("按用户指定的宏定义名增加新的宏定义：");
+		Macro macro = new Macro();
+		
+		//20190104
+		//macro.setNameMacro(str);
+		macro.setNameMacro(strKey);
+		macro.setValueMacro(strValue);
+		
+		if(null!=strValue) {
+			macro.setValueMacro(strValue);
+		}
+		
+		int ret = db.createMacro(state.getIntId(),macro);
+		
+		
+		String strReturn = strKey;		
+		if (0 != ret) {
+			strReturn = "创建失败";}
+		else {
+			int idMacro = macro.getIdMacro();
+			strReturn = "创建成功，" + "宏定义Id：" + idMacro;				
+		}	
+		return strReturn;
+				 
+	}// 新增macro
+	
+	//以上是STMacroList场景所需操作/////////////////////////////////////////////////
+	//以下是STFuctionList场景所需操作///////////////////////////////////////////////////
+	public static String lsFuncs(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("lsFuncs: arg=" + str);		
+		
+		int idProject = state.getIntId();
+				
+		System.out.println("查询属于当前工程的函数：");
+		List<Function> functions = db.getFunctionsInfoByProjectId(idProject);
+		String strReturn = "当前工程的函数:";
+		Iterator<Function> iter= functions.iterator();
+		//int i=0;
+		while(iter.hasNext()) {
+			//i++;
+			//strReturn += "\n函数"+i+":\n";
+			Function function = iter.next();
+			strReturn += "函数id:" + function.getIdFunction() + "; 函数名:"+function.getNameFunction()+"\n"; 
+		}
+
+		return strReturn;
+	}// 列出function
+	
+	public static String addFunc(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("addFunc: arg="+str);
+		
+		if(str == null ) {
+			return "未指定函数名";
+		}
+		
+		System.out.println("按用户指定的函数名增加新的函数：");
+		Function function = new Function();
+		function.setNameFunction(str);
+		
+		int ret = db.createFunction(state.getIntId(),function);
+		
+		
+		String strReturn = str;		
+		if (0 != ret) {
+			strReturn = "创建失败";}
+		else {
+			int idFunction = function.getIdFunction();
+			strReturn = "创建成功，" + "函数Id：" + idFunction;				
+		}	
+		return strReturn;
+				 
+	}// 新增function
+	
+	public static String cdFunc(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("cdFunc: arg="+str);
+		
+		
+		if(str == null ) {
+			return "未指定参数";
+		}
+		
+		System.out.println("查询用户指定的函数信息：");
+		
+		Function function;
+		
+		try {
+			int id = Integer.parseInt(str);
+			function = db.getFunctionByFunctionId(id);
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "参数不正确";
+		}
+				
+		//2018-12-03
+		//查询相应的dao对象后，先做是否为空的判断
+		if (function == null ) {
+			return str+"不存在";			
+		}
+		
+		String strReturn = "进入您的函数:";
+		strReturn += "函数id:" + function.getIdFunction() + "; 函数名:" +function.getNameFunction(); 
+		
+		int depth = state.getIntDepth();
+		State newState = new State(function.getIdFunction(),Const.tablename_Function,depth+1,"函数："+function.getIdFunction(),SceneType.STFunc,function.getNameFunction());
+		stateStack.push(newState);	
+		
+		return strReturn;
+	}// 进入function
+	
+	
+	//以上是STFuctionList场景所需操作/////////////////////////////////////////////////
+	//以下是STTypeList场景所需操作///////////////////////////////////////////////////
+	
+	public static String lsTypes(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("lss: arg=" + str);
+		
+		System.out.println("查询用户定义的类型体：");
+		List<Type> types = db.getTypesInfoByProjectId(state.getIntId());
+		String strReturn = "您定义的类型体:";
+		Iterator <Type> iter= types.iterator();
+		//int i=0;
+		while(iter.hasNext()) {
+			//i++;
+			//strReturn += "\n类型体"+i+":\n";
+			Type type = iter.next();
+			strReturn += "类型体id:" + type.getIdType() + "; 类型体名称:"+type.getNameType()+"\n"; 
+		}
+
+		return strReturn;
+
+	}// 列出所有type
+	
+	public static String cdType(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("cdType: arg="+str);
+		
+		if(str == null ) {
+			return "未指定参数";
+		}
+		
+		System.out.println("查询用户指定的类型信息：");
+		
+		try {
+			int id = Integer.parseInt(str);
+			Type type = db.getTypeByTypeId(id);
+					
+			//2018-12-03
+			//查询相应的dao对象后，先做是否为空的判断
+			if (type == null ) {
+				return str+"不存在";			
+			}
+			
+			String strReturn = "进入您的类型:";
+			strReturn += "类型id:" + type.getIdType() + "; 类型名:" +type.getNameType(); 
+			
+			int depth = state.getIntDepth();
+			State newState = new State(type.getIdType(),Const.tablename_Type,depth+1,"类型："+type.getIdType(),SceneType.STType,type.getNameType());
+			stateStack.push(newState);	
+			
+			return strReturn;
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "参数不正确";
+		}
+	}// 进入指定的type
+
+
+	public static String addType(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("addType: arg="+str);
+		
+		if(str == null ) {
+			return "未指定类型体名";
+		}
+		
+		//将str从“=”分割为key和value两部分
+		String[] strArray = str.split(" ");
+		String strModifier = strArray[0];
+		String strName = (strArray.length>1?strArray[1]:null);
+		
+		if(strName == null ) {
+			return "格式有误 请按 \'new [struct/uion/enum] name\'输入";
+		}
+		
+		System.out.println("按用户指定的类型名增加新的类型：");
+		Type type = new Type();
+		type.setModifierType(strModifier);
+		type.setNameType(strName);
+		
+		int ret = db.createType(state.getIntId(),type);
+		
+		
+		String strReturn = strName;		
+		if (0 != ret) {
+			strReturn = "创建失败";}
+		else {
+			int idType = type.getIdType();
+			strReturn = "创建成功，" + "类型Id：" + idType;			
+		}		
+		return strReturn;
+	}// 新增一个type
+
+
+	public static String delType(StateStack stateStack, String str) {
+	
+		System.out.println("delType: arg="+str);
+		
+		if(str == null ) {
+			return "未指定参数";
+		}
+		
+		System.out.println("按用户指定的类型Id删除一个类型：");
+
+		
+		try {
+			int id = Integer.parseInt(str);
+			int ret = db.deleteTypeByTypeId(id);
+			
+			
+			String strReturn = "";		
+			if (0 == ret) {
+				strReturn = "类型删除失败；" + "类型Id：" + str;}
+			else {
+				strReturn = "类型删除成功；" + "类型Id：" + str;	
+			}	
+
+			return strReturn;
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "参数不正确";
+		}
+	}// 删除一个type";
+
+	//以上是STTypeList场景所需操作/////////////////////////////////////////////////
+	//以下是STVarList场景所需操作///////////////////////////////////////////////////
+
+	
+	public static String lsVars(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("lsv: arg=" + str);
+		
+		int idProject = state.getIntId();
+		
+		System.out.println("查询属于当前工程的变量：");
+		List<Var> vars = db.getVarsInfoByProjectId(idProject);
+		String strReturn = "当前工程的变量:";
+		Iterator<Var> iter= vars.iterator();
+		//int i=0;
+		while(iter.hasNext()) {
+			//i++;
+			//strReturn += "\n变量"+i+":\n";
+			Var var = iter.next();
+			strReturn += "变量id:" + var.getIdVar() + "; 变量名:"+var.getNameVar()+"\n"; 
+		}
+
+		return strReturn;
+	}// 列出全局变量var
+	
+	public static String addVar(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("addv: arg="+str);
+		if(str == null ) {
+			return "未指定全局变量名";
+		}
+		System.out.println("按用户指定的变量名增加新的变量：");
+		Var var = new Var();
+		var.setNameVar(str);
+		
+		int ret = db.createVar(state.getIntId(),var);
+		
+		
+		String strReturn = str;		
+		if (0 != ret) {
+			strReturn = "创建失败";}
+		else {
+			int idVar = var.getIdVar();
+			strReturn = "创建成功，" + "变量Id：" + idVar;				
+		}	
+		return strReturn;
+	}// 新增var
+
+
+	public static String delVar(StateStack stateStack, String str) {
+		System.out.println("delv: arg="+str);
+
+		
+		System.out.println("按用户指定的变量Id删除一个变量：");
+
+		if(str == null ) {
+			return "未指定参数";
+		}
+		
+		try {
+			int id = Integer.parseInt(str);
+			int ret = db.deleteVarByVarId(id);
+			
+			
+			String strReturn = "";		
+			if (0 == ret) {
+				strReturn = "变量删除失败；" + "变量Id：" + str;}
+			else {
+				strReturn = "变量删除成功；" + "变量Id：" + str;	
+			}	
+
+			return strReturn;
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "参数不正确";
+		}
+	}// 删除var
+	
+	public static String cdVar(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("cdv: arg="+str);
+		
+		if(str == null ) {
+			return "未指定参数";
+		}
+		
+		System.out.println("查询用户指定的变量信息：");
+		
+		Var var;
+		try {
+			int id = Integer.parseInt(str);
+			var = db.getVarByVarId(id);
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "参数不正确";
+		}
+				
+		//2018-12-03
+		//查询相应的dao对象后，先做是否为空的判断
+		if (var == null ) {
+			return str+"不存在";			
+		}
+		
+		String strReturn = "进入您的变量:";
+		strReturn += "变量id:" + var.getIdVar() + "; 变量名:" +var.getNameVar(); 
+		
+		int depth = state.getIntDepth();
+		State newState = new State(var.getIdVar(),Const.tablename_Var,depth+1,"变量："+var.getIdVar(),SceneType.STVar,var.getNameVar());
+		stateStack.push(newState);	
+		
+		return strReturn;
+
+	}// 进入var
+	
+	//以上是场景STVarList所涉及操作///////////////////////////////////////////////////////////////////////////	
+	//以下是场景STStruct所涉及操作///////////////////////////////////////////////////////////////////////////
+
+	public static String lssi(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("lssi: arg="+str);
+		
+		int idType = state.getIntId();
+				
+		System.out.println("查询用户定义的类型体字段：");
+		List<TypeItem> typeItems = db.getTypeItemsInfoByTypeId(idType);
+		String strReturn = "您定义的类型体字段:";
+		Iterator <TypeItem> iter= typeItems.iterator();
+		//int i=0;
+		while(iter.hasNext()) {
+			//i++;
+			//strReturn += "\n类型体字段"+i+":\n";
+			TypeItem typeItem = iter.next();
+			strReturn += "类型体字段id:" + typeItem.getIdTypeitem() + "; 类型体字段名:"+typeItem.getNameTypeitem()+"\n"; 
+		}
+
+		return strReturn;
+	}// 列出type item
+
+	public static String cdsi(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("cdsi: arg="+str);
+		
+		if(str == null ) {
+			return "未指定参数";
+		}
+		
+		System.out.println("查询用户指定的类型字段信息：");
+		
+		try {
+			int id = Integer.parseInt(str);
+			TypeItem typeItem = db.getTypeItemByTypeItemId(id);
+					
+			//2018-12-03
+			//查询相应的dao对象后，先做是否为空的判断
+			if (typeItem == null ) {
+				return str+"不存在";			
+			}
+			
+			String strReturn = "进入您的类型字段:";
+			strReturn += "类型字段id:" + typeItem.getIdTypeitem() + "; 类型字段名:" +typeItem.getNameTypeitem(); 
+			
+			int depth = state.getIntDepth();
+			State newState = new State(typeItem.getIdTypeitem(),Const.tablename_TypeItem,depth+1,"类型字段："+typeItem.getIdTypeitem(),SceneType.STTypeItem,typeItem.getNameTypeitem());
+			stateStack.push(newState);	
+			
+			return strReturn;
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "参数不正确";
+		}
+
+	}// 进入type item
+
+	public static String addsi(StateStack stateStack, String str) {
+		State state = stateStack.getCurrentState();
+		System.out.println("addsi: arg=" + str);
+		
+		if(str == null ) {
+			return "未指定类型体字段名";
+		}
+		
+		System.out.println("按用户指定的类型字段名增加新的类型字段：");
+		TypeItem typeItem = new TypeItem();
+		typeItem.setNameTypeitem(str);
+		typeItem.setIdSelftype(state.getIntId());
+		
+		int ret = db.createTypeItem(typeItem);
+		
+		
+		String strReturn = str;		
+		if (0 != ret) {
+			strReturn = "创建失败";}
+		else {
+			int idTypeItem = typeItem.getIdTypeitem();
+			strReturn = "创建成功，" + "类型字段Id：" + idTypeItem;			
+		}		
+		return strReturn;
+	}// 新增type item
+
+	public static String delsi(StateStack stateStack, String str) {
+		//State state = stateStack.getCurrentState();
+		System.out.println("delsi: arg="+str);
+		
+		System.out.println("按用户指定的类型字段Id删除一个类型字段：");
+
+		if(str == null ) {
+			return "未指定参数";
+		}
+		
+		try {
+			int id = Integer.parseInt(str);
+			int ret = db.deleteTypeItemByTypeItemId(id);
+			
+			
+			String strReturn = "";		
+			if (0 == ret) {
+				strReturn = "类型字段删除失败；" + "类型字段Id：" + str;}
+			else {
+				strReturn = "类型字段删除成功；" + "类型字段Id：" + str;	
+			}	
+
+			return strReturn;
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "参数不正确";
+		}
+	}
+}
